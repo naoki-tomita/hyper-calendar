@@ -6,18 +6,18 @@ import { State, Actions, RSSItem } from "../Types/Types";
 
 export function RSSList({ 
   pages, 
-  fetch
+  fetch,
 }: {
-  pages: RSSItem[], 
-  fetch: ActionType<State, Actions>
+  pages: RSSItem[];
+  fetch: ActionType<State, Actions>;
 }) {
   return (
     <div>
-      <Link to="/dist/config">config</Link><br/>
+      <Link to="/config">config</Link><br/>
       <button onclick={fetch}>update</button>
       <ul>
         {pages.map((page, index) => 
-          (<li><Link to={`/dist/${index}`}>{page.title}</Link></li>))}
+          (<li><Link to={`/${index}`}>{page.title}</Link></li>))}
       </ul>
     </div>
   );

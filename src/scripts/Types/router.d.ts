@@ -18,7 +18,10 @@ declare module "@hyperapp/router" {
   export function Redirect(): any;
   export module location {
     export const state: any;
-    export function actions(): any;
+    export const actions: {
+      set(data: any): any;
+      go(pathname: string): void;
+    }
     export function subscribe(actions: any): typeof unsubscribe;
     export function unsubscribe(): any;
   }

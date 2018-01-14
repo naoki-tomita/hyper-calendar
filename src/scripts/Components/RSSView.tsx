@@ -16,7 +16,7 @@ function Description({
     description.content;
   return (
     <div>
-      <Link to="/dist/">back</Link>
+      <Link to="/">back</Link>
       <div oncreate={htmlfy}>{desc}</div>
     </div>
   );
@@ -28,7 +28,7 @@ export function RSSView({
   pages: RSSItem[];
 }) {
   return pages.map((page, index) => (
-    <Route path={`/dist/${index}`}>
+    <Route path={`/${index}`}>
       <Description description={page.description} />
     </Route>));
 }

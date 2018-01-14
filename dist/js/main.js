@@ -1025,16 +1025,18 @@ var state = {
 };
 function view(state, actions) {
     return (hyperapp_1.h("div", null,
-        hyperapp_1.h(Route_1.Route, { path: "/dist/config" },
+        hyperapp_1.h(Route_1.Route, { path: "/config" },
             hyperapp_1.h(Config_1.Config, { rsss: state.rsss, configActions: actions })),
-        hyperapp_1.h(Route_1.Route, { path: "/dist/" },
+        hyperapp_1.h(Route_1.Route, { path: "/" },
             hyperapp_1.h(RSSList_1.RSSList, { pages: state.pages, fetch: actions.fetch })),
         hyperapp_1.h(RSSView_1.RSSView, { pages: state.pages })));
 }
 var main = hyperapp_1.app(state, actions, view, document.body);
 router_1.location.subscribe(main.location);
+console.log(main);
 main.loadRSSEndpoint();
 main.fetch();
+main.location.go("/");
 
 
 /***/ }),
@@ -1286,7 +1288,7 @@ function Subscribing(_a) {
 function Config(_a) {
     var configActions = _a.configActions, rsss = _a.rsss;
     return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/dist/" }, "home"),
+        hyperapp_1.h(router_1.Link, { to: "/" }, "home"),
         hyperapp_1.h("div", null, "subscribing"),
         hyperapp_1.h("ul", null, rsss.map(function (rss, index) {
             return hyperapp_1.h("li", null,
@@ -1423,12 +1425,12 @@ __webpack_require__(2);
 function RSSList(_a) {
     var pages = _a.pages, fetch = _a.fetch;
     return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/dist/config" }, "config"),
+        hyperapp_1.h(router_1.Link, { to: "/config" }, "config"),
         hyperapp_1.h("br", null),
         hyperapp_1.h("button", { onclick: fetch }, "update"),
         hyperapp_1.h("ul", null, pages.map(function (page, index) {
             return (hyperapp_1.h("li", null,
-                hyperapp_1.h(router_1.Link, { to: "/dist/" + index }, page.title)));
+                hyperapp_1.h(router_1.Link, { to: "/" + index }, page.title)));
         }))));
 }
 exports.RSSList = RSSList;
@@ -1452,12 +1454,12 @@ function Description(_a) {
         description :
         description.content;
     return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/dist/" }, "back"),
+        hyperapp_1.h(router_1.Link, { to: "/" }, "back"),
         hyperapp_1.h("div", { oncreate: Utils_1.htmlfy }, desc)));
 }
 function RSSView(_a) {
     var pages = _a.pages;
-    return pages.map(function (page, index) { return (hyperapp_1.h(Route_1.Route, { path: "/dist/" + index },
+    return pages.map(function (page, index) { return (hyperapp_1.h(Route_1.Route, { path: "/" + index },
         hyperapp_1.h(Description, { description: page.description }))); });
 }
 exports.RSSView = RSSView;

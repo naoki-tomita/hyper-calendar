@@ -36,13 +36,13 @@ const state: State = {
 function view(state: State, actions: Actions) {
   return (
     <div>
-      <Route path="/dist/config">
+      <Route path="/config">
         <Config 
           rsss={state.rsss}
           configActions={actions}
         />
       </Route>
-      <Route path="/dist/">
+      <Route path="/">
         <RSSList pages={state.pages} fetch={actions.fetch}/>
       </Route>
       <RSSView pages={state.pages} />
@@ -52,5 +52,7 @@ function view(state: State, actions: Actions) {
 
 const main = app<State, Actions>(state, actions, view, document.body);
 location.subscribe(main.location);
+console.log(main);
 main.loadRSSEndpoint();
 main.fetch();
+main.location.go("/");

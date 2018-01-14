@@ -71,7 +71,7 @@ export function Config({
 }) {
   return (
     <div>
-      <Link to="/dist/">home</Link>
+      <Link to="/">home</Link>
       <div>subscribing</div>
       <ul>
         {rsss.map((rss, index) => 
