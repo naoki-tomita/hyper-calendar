@@ -41,7 +41,7 @@ export const configActions: ConfigActions = {
   },
   loadRSSEndpoint: () => () => {
     return {
-      rsss: cache.rss.get(),
+      rsss: cache.rss.get() || [],
     };
   }
 }

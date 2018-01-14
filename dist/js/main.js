@@ -1273,7 +1273,7 @@ exports.configActions = {
     },
     loadRSSEndpoint: function () { return function () {
         return {
-            rsss: cache.rss.get(),
+            rsss: cache.rss.get() || [],
         };
     }; }
 };
