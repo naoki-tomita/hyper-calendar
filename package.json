@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@hyperapp/html": "^0.5.1",
+    "@hyperapp/router": "^0.4.1",
     "@types/webpack": "^3.8.1",
     "awesome-typescript-loader": "^3.4.1",
     "chokidar-cli": "^1.2.0",
@@ -21,6 +22,7 @@
     "build": "run-p build:*",
     "build:ts": "webpack",
     "build:html": "cpx \"./src/**/*.html\" ./dist",
-    "serve": "ws"
+    "serve": "ws",
+    "start": "run-s build serve"
   }
 }
