@@ -1,11 +1,10 @@
 import { location } from "@hyperapp/router";
-import { ActionType } from "hyperapp";
+import { ActionType, ActionsType } from "hyperapp";
 import { ConfigActions } from "../Components/Config";
 
-export interface Actions {
+export interface Actions extends ConfigActions {
   fetch: ActionType<State, Actions>;
   update: ActionType<State, Actions>;
-  configActions: ConfigActions;
   location: typeof location.actions;
 }
 

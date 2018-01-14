@@ -946,6 +946,14 @@ exports.Route = Route;
 
 "use strict";
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -987,16 +995,11 @@ var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
 var Config_1 = __webpack_require__(11);
-var Storage_1 = __webpack_require__(12);
 var Services_1 = __webpack_require__(13);
 var Route_1 = __webpack_require__(3);
 var RSSList_1 = __webpack_require__(14);
 var RSSView_1 = __webpack_require__(15);
-var cache = {
-    rss: new Storage_1.Storage("rss"),
-};
-var actions = {
-    fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
+var actions = __assign({ fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
         var pages;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -1007,59 +1010,30 @@ var actions = {
                     return [2 /*return*/];
             }
         });
-    }); }; },
-    update: function (pages) { return function (state) {
+    }); }; }, update: function (pages) { return function (state) {
         return {
             pages: pages,
         };
-    }; },
-    configActions: {
-        addRSSEndpoint: function () { return function (state, actions) {
-            if (!cache.rss.get()) {
-                cache.rss.set([]);
-            }
-            cache.rss.set(cache.rss.get().concat([{ url: state.config.additionalRss }]));
-            return {
-                rsss: cache.rss.get(),
-            };
-        }; },
-        removeRSSEndpoint: function (url) { return function (state, actions) {
-            cache.rss.set(cache.rss.get().filter(function (rss) { return rss.url !== url; }));
-            return {
-                rsss: cache.rss.get(),
-            };
-        }; },
-        updateRSSEndpointUrl: function (_a) {
-            var value = _a.target.value;
-            return function (state) {
-                return {
-                    config: {
-                        additionalRss: value,
-                    },
-                };
-            };
-        },
-    },
-    location: router_1.location.actions,
-};
+    }; } }, Config_1.configActions, { location: router_1.location.actions });
 var state = {
     location: router_1.location.state,
     config: {
         additionalRss: "",
     },
-    rsss: cache.rss.get(),
+    rsss: [],
     pages: [],
 };
 function view(state, actions) {
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(Route_1.Route, { path: "/dist/config" },
-            hyperapp_1.h(Config_1.Config, { rsss: state.rsss, configActions: actions.configActions })),
+            hyperapp_1.h(Config_1.Config, { rsss: state.rsss, configActions: actions })),
         hyperapp_1.h(Route_1.Route, { path: "/dist/" },
             hyperapp_1.h(RSSList_1.RSSList, { pages: state.pages, fetch: actions.fetch })),
         hyperapp_1.h(RSSView_1.RSSView, { pages: state.pages })));
 }
 var main = hyperapp_1.app(state, actions, view, document.body);
 router_1.location.subscribe(main.location);
+main.loadRSSEndpoint();
 main.fetch();
 
 
@@ -1267,6 +1241,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
+var Storage_1 = __webpack_require__(12);
+var cache = {
+    rss: new Storage_1.Storage("rss"),
+};
+exports.configActions = {
+    addRSSEndpoint: function () { return function (state, actions) {
+        if (!cache.rss.get()) {
+            cache.rss.set([]);
+        }
+        cache.rss.set(cache.rss.get().concat([{ url: state.config.additionalRss }]));
+        return {
+            rsss: cache.rss.get(),
+        };
+    }; },
+    removeRSSEndpoint: function (url) { return function (state, actions) {
+        cache.rss.set(cache.rss.get().filter(function (rss) { return rss.url !== url; }));
+        return {
+            rsss: cache.rss.get(),
+        };
+    }; },
+    updateRSSEndpointUrl: function (_a) {
+        var value = _a.target.value;
+        return function (state) {
+            return {
+                config: {
+                    additionalRss: value,
+                },
+            };
+        };
+    },
+    loadRSSEndpoint: function () { return function () {
+        return {
+            rsss: cache.rss.get(),
+        };
+    }; }
+};
 function Subscribing(_a) {
     var index = _a.index, url = _a.url, removeAction = _a.removeAction;
     return (hyperapp_1.h("span", null,

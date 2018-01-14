@@ -1,13 +1,49 @@
-import { ActionType, h } from "hyperapp";
+import { ActionType, h, ActionsType } from "hyperapp";
 import { Link } from "@hyperapp/router";
 import "@hyperapp/html";
 
 import { State, Actions, RSSEndpoint } from "../Types/Types";
+import { Storage } from "../Utils/Storage";
+
+const cache = {
+  rss: new Storage<RSSEndpoint[]>("rss"),
+};
 
 export interface ConfigActions {
   addRSSEndpoint: ActionType<State, Actions>;
   removeRSSEndpoint: ActionType<State, Actions>;
   updateRSSEndpointUrl: ActionType<State, Actions>;
+  loadRSSEndpoint: ActionType<State, Actions>;
+}
+
+export const configActions: ConfigActions = {
+  addRSSEndpoint: () => (state, actions) => {
+    if (!cache.rss.get()) {
+      cache.rss.set([]);
+    }
+    cache.rss.set([ ...cache.rss.get(), { url: state.config.additionalRss } ]);
+    return {
+      rsss: cache.rss.get(),
+    };
+  },
+  removeRSSEndpoint: (url) => (state, actions) => {
+    cache.rss.set(cache.rss.get().filter((rss) => rss.url !== url));
+    return {
+      rsss: cache.rss.get(),
+    };
+  },
+  updateRSSEndpointUrl: ({ target: { value } }) => (state) => {
+    return {
+      config: {
+        additionalRss: value,
+      },
+    };
+  },
+  loadRSSEndpoint: () => () => {
+    return {
+      rsss: cache.rss.get(),
+    };
+  }
 }
 
 function Subscribing({

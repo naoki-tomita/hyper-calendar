@@ -1,19 +1,14 @@
-import { app, h } from "hyperapp";
+import { app, h, ActionsType } from "hyperapp";
 import { Link, location } from "@hyperapp/router";
 import "@hyperapp/html";
 
 import { RSSItem, Actions, State, RSSEndpoint } from "./Types/Types";
-import { Config } from "./Components/Config";
-import { Storage } from "./Storage";
+import { Config, configActions } from "./Components/Config";
 import { fetchAll } from "./Services";
 import { htmlfy } from "./Utils/Utils";
 import { Route } from "./Utils/Patches/Route";
 import { RSSList } from "./Components/RSSList";
 import { RSSView } from "./Components/RSSView";
-
-const cache = {
-  rss: new Storage<RSSEndpoint[]>("rss"),
-};
 
 const actions: Actions = {
   fetch: () => async (state, actions) => { 
@@ -25,30 +20,7 @@ const actions: Actions = {
       pages,
     }
   },
-  configActions: {
-    addRSSEndpoint: () => (state, actions) => {
-      if (!cache.rss.get()) {
-        cache.rss.set([]);
-      }
-      cache.rss.set([ ...cache.rss.get(), { url: state.config.additionalRss } ]);
-      return {
-        rsss: cache.rss.get(),
-      };
-    },
-    removeRSSEndpoint: (url) => (state, actions) => {
-      cache.rss.set(cache.rss.get().filter((rss) => rss.url !== url));
-      return {
-        rsss: cache.rss.get(),
-      };
-    },
-    updateRSSEndpointUrl: ({ target: { value } }) => (state) => {
-      return {
-        config: {
-          additionalRss: value,
-        },
-      };
-    },
-  },
+  ...configActions,
   location: location.actions,
 }
 
@@ -57,7 +29,7 @@ const state: State = {
   config: {
     additionalRss: "",
   },
-  rsss: cache.rss.get(),
+  rsss: [],
   pages: [],
 };
 
@@ -67,7 +39,7 @@ function view(state: State, actions: Actions) {
       <Route path="/dist/config">
         <Config 
           rsss={state.rsss}
-          configActions={actions.configActions}
+          configActions={actions}
         />
       </Route>
       <Route path="/dist/">
@@ -80,4 +52,5 @@ function view(state: State, actions: Actions) {
 
 const main = app<State, Actions>(state, actions, view, document.body);
 location.subscribe(main.location);
+main.loadRSSEndpoint();
 main.fetch();
