@@ -22,7 +22,7 @@
     "build": "run-p build:*",
     "build:ts": "webpack",
     "build:html": "cpx \"./src/**/*.html\" ./dist",
-    "serve": "ws",
+    "serve": "ws -d ./dist",
     "start": "run-s build serve"
   }
 }

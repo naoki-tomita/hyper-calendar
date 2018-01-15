@@ -12,7 +12,7 @@ import { RSSView } from "./Components/RSSView";
 
 const actions: Actions = {
   fetch: () => async (state, actions) => { 
-    const pages = await fetchAll(state.rsss);
+    const pages = await fetchAll(state.config.rsss);
     actions.update(pages);
   },
   update: (pages) => (state) => {
@@ -20,7 +20,7 @@ const actions: Actions = {
       pages,
     }
   },
-  ...configActions,
+  config: configActions,
   location: location.actions,
 }
 
@@ -28,8 +28,8 @@ const state: State = {
   location: location.state,
   config: {
     additionalRss: "",
+    rsss: [],
   },
-  rsss: [],
   pages: [],
 };
 
@@ -38,8 +38,8 @@ function view(state: State, actions: Actions) {
     <div>
       <Route path="/config">
         <Config 
-          rsss={state.rsss}
-          configActions={actions}
+          rsss={state.config.rsss}
+          configActions={actions.config}
         />
       </Route>
       <Route path="/">
@@ -53,6 +53,6 @@ function view(state: State, actions: Actions) {
 const main = app<State, Actions>(state, actions, view, document.body);
 location.subscribe(main.location);
 console.log(main);
-main.loadRSSEndpoint();
+main.config.loadRSSEndpoint();
 main.fetch();
 main.location.go("/");

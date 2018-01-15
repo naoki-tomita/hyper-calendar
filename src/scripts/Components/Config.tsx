@@ -9,11 +9,16 @@ const cache = {
   rss: new Storage<RSSEndpoint[]>("rss"),
 };
 
+interface ConfigState {
+  additionalRss: string;
+  rsss: RSSEndpoint[];
+}
+
 export interface ConfigActions {
-  addRSSEndpoint: ActionType<State, Actions>;
-  removeRSSEndpoint: ActionType<State, Actions>;
-  updateRSSEndpointUrl: ActionType<State, Actions>;
-  loadRSSEndpoint: ActionType<State, Actions>;
+  addRSSEndpoint: ActionType<ConfigState, ConfigActions>;
+  removeRSSEndpoint: ActionType<ConfigState, ConfigActions>;
+  updateRSSEndpointUrl: ActionType<ConfigState, ConfigActions>;
+  loadRSSEndpoint: ActionType<ConfigState, ConfigActions>;
 }
 
 export const configActions: ConfigActions = {
@@ -21,7 +26,7 @@ export const configActions: ConfigActions = {
     if (!cache.rss.get()) {
       cache.rss.set([]);
     }
-    cache.rss.set([ ...cache.rss.get(), { url: state.config.additionalRss } ]);
+    cache.rss.set([ ...cache.rss.get(), { url: state.additionalRss } ]);
     return {
       rsss: cache.rss.get(),
     };
@@ -34,9 +39,7 @@ export const configActions: ConfigActions = {
   },
   updateRSSEndpointUrl: ({ target: { value } }) => (state) => {
     return {
-      config: {
-        additionalRss: value,
-      },
+      additionalRss: value,
     };
   },
   loadRSSEndpoint: () => () => {
@@ -53,7 +56,7 @@ function Subscribing({
 }: {
   index: number;
   url: string;
-  removeAction: ActionType<State, Actions>
+  removeAction: ActionType<ConfigState, ConfigActions>
 }) {
   return (
     <span>

@@ -2,10 +2,11 @@ import { location } from "@hyperapp/router";
 import { ActionType, ActionsType } from "hyperapp";
 import { ConfigActions } from "../Components/Config";
 
-export interface Actions extends ConfigActions {
+export interface Actions {
   fetch: ActionType<State, Actions>;
   update: ActionType<State, Actions>;
   location: typeof location.actions;
+  config: ConfigActions;
 }
 
 export interface RSSEndpoint {
@@ -30,7 +31,7 @@ export interface State {
   location: typeof location.state;
   config: {
     additionalRss: string;
+    rsss: RSSEndpoint[];
   };
-  rsss: RSSEndpoint[];
   pages: RSSItem[];
 }

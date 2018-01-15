@@ -946,14 +946,6 @@ exports.Route = Route;
 
 "use strict";
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -999,34 +991,39 @@ var Services_1 = __webpack_require__(13);
 var Route_1 = __webpack_require__(3);
 var RSSList_1 = __webpack_require__(14);
 var RSSView_1 = __webpack_require__(15);
-var actions = __assign({ fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
+var actions = {
+    fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
         var pages;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Services_1.fetchAll(state.rsss)];
+                case 0: return [4 /*yield*/, Services_1.fetchAll(state.config.rsss)];
                 case 1:
                     pages = _a.sent();
                     actions.update(pages);
                     return [2 /*return*/];
             }
         });
-    }); }; }, update: function (pages) { return function (state) {
+    }); }; },
+    update: function (pages) { return function (state) {
         return {
             pages: pages,
         };
-    }; } }, Config_1.configActions, { location: router_1.location.actions });
+    }; },
+    config: Config_1.configActions,
+    location: router_1.location.actions,
+};
 var state = {
     location: router_1.location.state,
     config: {
         additionalRss: "",
+        rsss: [],
     },
-    rsss: [],
     pages: [],
 };
 function view(state, actions) {
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(Route_1.Route, { path: "/config" },
-            hyperapp_1.h(Config_1.Config, { rsss: state.rsss, configActions: actions })),
+            hyperapp_1.h(Config_1.Config, { rsss: state.config.rsss, configActions: actions.config })),
         hyperapp_1.h(Route_1.Route, { path: "/" },
             hyperapp_1.h(RSSList_1.RSSList, { pages: state.pages, fetch: actions.fetch })),
         hyperapp_1.h(RSSView_1.RSSView, { pages: state.pages })));
@@ -1034,7 +1031,7 @@ function view(state, actions) {
 var main = hyperapp_1.app(state, actions, view, document.body);
 router_1.location.subscribe(main.location);
 console.log(main);
-main.loadRSSEndpoint();
+main.config.loadRSSEndpoint();
 main.fetch();
 main.location.go("/");
 
@@ -1252,7 +1249,7 @@ exports.configActions = {
         if (!cache.rss.get()) {
             cache.rss.set([]);
         }
-        cache.rss.set(cache.rss.get().concat([{ url: state.config.additionalRss }]));
+        cache.rss.set(cache.rss.get().concat([{ url: state.additionalRss }]));
         return {
             rsss: cache.rss.get(),
         };
@@ -1267,9 +1264,7 @@ exports.configActions = {
         var value = _a.target.value;
         return function (state) {
             return {
-                config: {
-                    additionalRss: value,
-                },
+                additionalRss: value,
             };
         };
     },
