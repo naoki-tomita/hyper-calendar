@@ -12,10 +12,10 @@ export const RSSList: Component<RSSListProps> = function({ pages, fetch }) {
   return (
     <div>
       <Link to="/config">config</Link><br/>
-      <button onclick={fetch}>update</button>
-      <ul>
+      <button class="waves-effect waves-light btn" onclick={fetch}>update</button>
+      <ul class="collection">
         {pages.map((page, index) =>
-          (<li><Link to={`/${index}`}>{page.title}</Link></li>))}
+          (<li class="collection-item"><Link to={`/${index}`}>{page.title}</Link></li>))}
       </ul>
     </div>
   );

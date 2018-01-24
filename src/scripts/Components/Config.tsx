@@ -58,7 +58,7 @@ interface SubscribingProps {
 const Subscribing: Component<SubscribingProps> = function({ index, url, removeAction }) {
   return (
     <span>
-      <span>{url}</span><button onclick={() => removeAction(url)}>x</button>
+      <span>{url}</span><button class="waves-effect waves-light btn right" onclick={() => removeAction(url)}>x</button>
     </span>
   );
 }
@@ -73,9 +73,9 @@ export const Config: Component<ConfigProps> = function({ configActions, rsss }) 
     <div>
       <Link to="/">home</Link>
       <div>subscribing</div>
-      <ul>
+      <ul class="collection">
         {rsss.map((rss, index) =>
-          <li>
+          <li class="collection-item">
             <Subscribing
               url={rss.url}
               index={index}
@@ -85,7 +85,7 @@ export const Config: Component<ConfigProps> = function({ configActions, rsss }) 
       </ul>
       <div>input url</div>
       <input oninput={configActions.updateRSSEndpointUrl} />
-      <button onclick={configActions.addRSSEndpoint}>add</button>
+      <button class="waves-effect waves-light btn" onclick={configActions.addRSSEndpoint}>add</button>
     </div>
   );
 }

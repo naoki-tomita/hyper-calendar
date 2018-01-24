@@ -985,11 +985,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
-var Config_1 = __webpack_require__(11);
-var Services_1 = __webpack_require__(13);
+__webpack_require__(11);
+var Config_1 = __webpack_require__(12);
+var Services_1 = __webpack_require__(14);
 var Route_1 = __webpack_require__(3);
-var RSSList_1 = __webpack_require__(14);
-var RSSView_1 = __webpack_require__(15);
+var RSSList_1 = __webpack_require__(15);
+var RSSView_1 = __webpack_require__(16);
 var actions = {
     fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
         var pages;
@@ -1020,7 +1021,7 @@ var state = {
     pages: [],
 };
 function view(state, actions) {
-    return (hyperapp_1.h("div", null,
+    return (hyperapp_1.h("div", { class: "container" },
         hyperapp_1.h(Route_1.Route, { path: "/config" },
             hyperapp_1.h(Config_1.Config, { rsss: state.config.rsss, configActions: actions.config })),
         hyperapp_1.h(Route_1.Route, { path: "/" },
@@ -1231,6 +1232,21 @@ var location = {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+module.exports = function materialize(list, key, value) {
+  var ret = {};
+
+  if (list) Array.prototype.forEach.call(list, function(item) {
+    ret[item[key||'name']] = item[value||'value'];
+  });
+
+  return ret;
+};
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1239,7 +1255,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
-var Storage_1 = __webpack_require__(12);
+var Storage_1 = __webpack_require__(13);
 var cache = {
     rss: new Storage_1.Storage("rss"),
 };
@@ -1277,25 +1293,25 @@ var Subscribing = function (_a) {
     var index = _a.index, url = _a.url, removeAction = _a.removeAction;
     return (hyperapp_1.h("span", null,
         hyperapp_1.h("span", null, url),
-        hyperapp_1.h("button", { onclick: function () { return removeAction(url); } }, "x")));
+        hyperapp_1.h("button", { class: "waves-effect waves-light btn right", onclick: function () { return removeAction(url); } }, "x")));
 };
 exports.Config = function (_a) {
     var configActions = _a.configActions, rsss = _a.rsss;
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(router_1.Link, { to: "/" }, "home"),
         hyperapp_1.h("div", null, "subscribing"),
-        hyperapp_1.h("ul", null, rsss.map(function (rss, index) {
-            return hyperapp_1.h("li", null,
+        hyperapp_1.h("ul", { class: "collection" }, rsss.map(function (rss, index) {
+            return hyperapp_1.h("li", { class: "collection-item" },
                 hyperapp_1.h(Subscribing, { url: rss.url, index: index, removeAction: configActions.removeRSSEndpoint }));
         })),
         hyperapp_1.h("div", null, "input url"),
         hyperapp_1.h("input", { oninput: configActions.updateRSSEndpointUrl }),
-        hyperapp_1.h("button", { onclick: configActions.addRSSEndpoint }, "add")));
+        hyperapp_1.h("button", { class: "waves-effect waves-light btn", onclick: configActions.addRSSEndpoint }, "add")));
 };
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1321,7 +1337,7 @@ exports.Storage = Storage;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1406,7 +1422,7 @@ exports.fetchAll = fetchAll;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1420,16 +1436,16 @@ exports.RSSList = function (_a) {
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(router_1.Link, { to: "/config" }, "config"),
         hyperapp_1.h("br", null),
-        hyperapp_1.h("button", { onclick: fetch }, "update"),
-        hyperapp_1.h("ul", null, pages.map(function (page, index) {
-            return (hyperapp_1.h("li", null,
+        hyperapp_1.h("button", { class: "waves-effect waves-light btn", onclick: fetch }, "update"),
+        hyperapp_1.h("ul", { class: "collection" }, pages.map(function (page, index) {
+            return (hyperapp_1.h("li", { class: "collection-item" },
                 hyperapp_1.h(router_1.Link, { to: "/" + index }, page.title)));
         }))));
 };
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1439,7 +1455,7 @@ var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
 var Route_1 = __webpack_require__(3);
-var Utils_1 = __webpack_require__(16);
+var Utils_1 = __webpack_require__(17);
 var Description = function (_a) {
     var description = _a.description;
     var body = typeof description === "string" ?
@@ -1460,7 +1476,7 @@ function createRoute(index, description) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -1,6 +1,7 @@
 import { app, h, ActionsType } from "hyperapp";
 import { Link, location } from "@hyperapp/router";
 import "@hyperapp/html";
+import "materialize";
 
 import { RSSItem, Actions, State, RSSEndpoint } from "./Types/Types";
 import { Config, configActions } from "./Components/Config";
@@ -35,7 +36,7 @@ const state: State = {
 
 function view(state: State, actions: Actions) {
   return (
-    <div>
+    <div class="container">
       <Route path="/config">
         <Config
           rsss={state.config.rsss}
