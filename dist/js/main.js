@@ -933,11 +933,10 @@ function wbr(props, children) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
-function Route(_a, children) {
+exports.Route = function (_a, children) {
     var parent = _a.parent, path = _a.path;
     return hyperapp_1.h(router_1.Route, { parent: parent, path: path, render: function () { return children; } });
-}
-exports.Route = Route;
+};
 
 
 /***/ }),
@@ -1274,13 +1273,13 @@ exports.configActions = {
         };
     }; }
 };
-function Subscribing(_a) {
+var Subscribing = function (_a) {
     var index = _a.index, url = _a.url, removeAction = _a.removeAction;
     return (hyperapp_1.h("span", null,
         hyperapp_1.h("span", null, url),
         hyperapp_1.h("button", { onclick: function () { return removeAction(url); } }, "x")));
-}
-function Config(_a) {
+};
+exports.Config = function (_a) {
     var configActions = _a.configActions, rsss = _a.rsss;
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(router_1.Link, { to: "/" }, "home"),
@@ -1292,8 +1291,7 @@ function Config(_a) {
         hyperapp_1.h("div", null, "input url"),
         hyperapp_1.h("input", { oninput: configActions.updateRSSEndpointUrl }),
         hyperapp_1.h("button", { onclick: configActions.addRSSEndpoint }, "add")));
-}
-exports.Config = Config;
+};
 
 
 /***/ }),
@@ -1417,7 +1415,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var hyperapp_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(1);
 __webpack_require__(2);
-function RSSList(_a) {
+exports.RSSList = function (_a) {
     var pages = _a.pages, fetch = _a.fetch;
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(router_1.Link, { to: "/config" }, "config"),
@@ -1427,8 +1425,7 @@ function RSSList(_a) {
             return (hyperapp_1.h("li", null,
                 hyperapp_1.h(router_1.Link, { to: "/" + index }, page.title)));
         }))));
-}
-exports.RSSList = RSSList;
+};
 
 
 /***/ }),
@@ -1443,21 +1440,23 @@ var router_1 = __webpack_require__(1);
 __webpack_require__(2);
 var Route_1 = __webpack_require__(3);
 var Utils_1 = __webpack_require__(16);
-function Description(_a) {
+var Description = function (_a) {
     var description = _a.description;
-    var desc = typeof description === "string" ?
+    var body = typeof description === "string" ?
         description :
         description.content;
     return (hyperapp_1.h("div", null,
         hyperapp_1.h(router_1.Link, { to: "/" }, "back"),
-        hyperapp_1.h("div", { oncreate: Utils_1.htmlfy }, desc)));
-}
-function RSSView(_a) {
+        hyperapp_1.h("div", { oncreate: Utils_1.htmlfy }, body)));
+};
+exports.RSSView = function (_a) {
     var pages = _a.pages;
-    return pages.map(function (page, index) { return (hyperapp_1.h(Route_1.Route, { path: "/" + index },
-        hyperapp_1.h(Description, { description: page.description }))); });
+    return (hyperapp_1.h("div", null, pages.map(function (page, index) { return (createRoute(index, page.description)); })));
+};
+function createRoute(index, description) {
+    return (hyperapp_1.h(Route_1.Route, { path: "/" + index },
+        hyperapp_1.h(Description, { description: description })));
 }
-exports.RSSView = RSSView;
 
 
 /***/ }),

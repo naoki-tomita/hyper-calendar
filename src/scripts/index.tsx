@@ -11,7 +11,7 @@ import { RSSList } from "./Components/RSSList";
 import { RSSView } from "./Components/RSSView";
 
 const actions: Actions = {
-  fetch: () => async (state, actions) => { 
+  fetch: () => async (state, actions) => {
     const pages = await fetchAll(state.config.rsss);
     actions.update(pages);
   },
@@ -37,12 +37,12 @@ function view(state: State, actions: Actions) {
   return (
     <div>
       <Route path="/config">
-        <Config 
+        <Config
           rsss={state.config.rsss}
           configActions={actions.config}
         />
       </Route>
-      <Route path="/">
+      <Route path="/" >
         <RSSList pages={state.pages} fetch={actions.fetch}/>
       </Route>
       <RSSView pages={state.pages} />

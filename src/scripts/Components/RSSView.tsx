@@ -1,4 +1,4 @@
-import { h } from "hyperapp";
+import { h, Component } from "hyperapp";
 import { Link } from "@hyperapp/router";
 import "@hyperapp/html";
 
@@ -6,29 +6,38 @@ import { RSSItem } from "../Types/Types";
 import { Route } from "../Utils/Patches/Route";
 import { htmlfy } from "../Utils/Utils";
 
-function Description({ 
-  description 
-}: {
-  description: string | { content: string; }
-}) {
-  const desc = typeof description === "string" ?
+interface DescriptionProps {
+  description: string | { content: string; };
+}
+
+const Description: Component<DescriptionProps> = function({ description }) {
+  const body = typeof description === "string" ?
     description :
     description.content;
   return (
     <div>
       <Link to="/">back</Link>
-      <div oncreate={htmlfy}>{desc}</div>
+      <div oncreate={htmlfy}>{body}</div>
     </div>
   );
 }
 
-export function RSSView({
-  pages,
-}: {
+interface RSSViewProps {
   pages: RSSItem[];
-}) {
-  return pages.map((page, index) => (
+}
+
+export const RSSView: Component<RSSViewProps> = function({ pages }) {
+  return (
+    <div>
+      {pages.map((page, index) => (createRoute(index, page.description)))}
+    </div>
+  );
+}
+
+function createRoute(index: number, description: string | { content: string }) {
+  return (
     <Route path={`/${index}`}>
-      <Description description={page.description} />
-    </Route>));
+      <Description description={description} />
+    </Route>
+  );
 }

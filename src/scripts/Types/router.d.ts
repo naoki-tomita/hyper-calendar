@@ -1,6 +1,6 @@
 declare module "@hyperapp/router" {
-  export function Link(options: { 
-    to: string; 
+  export function Link(options: {
+    to: string;
   }): any;
   export function Route<Props>(options: {
     parent?: boolean;
@@ -13,6 +13,7 @@ declare module "@hyperapp/router" {
         isExact: boolean;
       }
     }) => any;
+    oncreate?: (el: Element) => any;
   }): any;
   export function Switch(): any;
   export function Redirect(): any;

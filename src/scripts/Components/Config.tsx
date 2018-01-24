@@ -1,4 +1,4 @@
-import { ActionType, h, ActionsType } from "hyperapp";
+import { ActionType, h, ActionsType, Component } from "hyperapp";
 import { Link } from "@hyperapp/router";
 import "@hyperapp/html";
 
@@ -49,15 +49,13 @@ export const configActions: ConfigActions = {
   }
 }
 
-function Subscribing({
-  index, 
-  url, 
-  removeAction
-}: {
+interface SubscribingProps {
   index: number;
   url: string;
-  removeAction: ActionType<ConfigState, ConfigActions>
-}) {
+  removeAction: ActionType<ConfigState, ConfigActions>;
+}
+
+const Subscribing: Component<SubscribingProps> = function({ index, url, removeAction }) {
   return (
     <span>
       <span>{url}</span><button onclick={() => removeAction(url)}>x</button>
@@ -65,23 +63,22 @@ function Subscribing({
   );
 }
 
-export function Config({
-  configActions,
-  rsss
-}: {
+interface ConfigProps {
   configActions: ConfigActions;
   rsss: RSSEndpoint[];
-}) {
+}
+
+export const Config: Component<ConfigProps> = function({ configActions, rsss }) {
   return (
     <div>
       <Link to="/">home</Link>
       <div>subscribing</div>
       <ul>
-        {rsss.map((rss, index) => 
+        {rsss.map((rss, index) =>
           <li>
-            <Subscribing 
-              url={rss.url} 
-              index={index} 
+            <Subscribing
+              url={rss.url}
+              index={index}
               removeAction={configActions.removeRSSEndpoint}
             />
           </li>)}
