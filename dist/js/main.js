@@ -36,12 +36,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -59,1434 +79,226 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/scripts/index.tsx");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./node_modules/@hyperapp/html/dist/html.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@hyperapp/html/dist/html.js ***!
+  \**************************************************/
+/*! exports provided: a, abbr, address, area, article, aside, audio, b, bdi, bdo, blockquote, br, button, canvas, caption, cite, code, col, colgroup, data, datalist, dd, del, details, dfn, dialog, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hr, i, img, input, ins, kbd, label, legend, li, main, map, mark, menu, menuitem, meter, nav, object, ol, optgroup, option, output, p, param, pre, progress, q, rp, rt, rtc, ruby, s, samp, section, select, small, source, span, strong, sub, summary, sup, svg, table, tbody, td, textarea, tfoot, th, thead, time, tr, track, u, ul, video, vvar, wbr */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["h"] = h;
-/* harmony export (immutable) */ __webpack_exports__["app"] = app;
-function h(name, props) {
-  var node
-  var children = []
-
-  for (var stack = [], i = arguments.length; i-- > 2; ) {
-    stack.push(arguments[i])
-  }
-
-  while (stack.length) {
-    if (Array.isArray((node = stack.pop()))) {
-      for (var i = node.length; i--; ) {
-        stack.push(node[i])
-      }
-    } else if (node == null || node === true || node === false) {
-    } else {
-      children.push(node)
-    }
-  }
-
-  return typeof name === "string"
-    ? {
-        name: name,
-        props: props || {},
-        children: children
-      }
-    : name(props || {}, children)
-}
-
-function app(state, actions, view, container) {
-  var patchLock
-  var lifecycle = []
-  var root = container && container.children[0]
-  var node = vnode(root, [].map)
-
-  repaint(init([], (state = copy(state)), (actions = copy(actions))))
-
-  return actions
-
-  function vnode(element, map) {
-    return (
-      element && {
-        name: element.nodeName.toLowerCase(),
-        props: {},
-        children: map.call(element.childNodes, function(element) {
-          return element.nodeType === 3
-            ? element.nodeValue
-            : vnode(element, map)
-        })
-      }
-    )
-  }
-
-  function render(next) {
-    patchLock = !patchLock
-    next = view(state, actions)
-
-    if (container && !patchLock) {
-      root = patch(container, root, node, (node = next))
-    }
-
-    while ((next = lifecycle.pop())) next()
-  }
-
-  function repaint() {
-    if (!patchLock) {
-      patchLock = !patchLock
-      setTimeout(render)
-    }
-  }
-
-  function copy(a, b) {
-    var target = {}
-
-    for (var i in a) target[i] = a[i]
-    for (var i in b) target[i] = b[i]
-
-    return target
-  }
-
-  function set(path, value, source, target) {
-    if (path.length) {
-      target[path[0]] =
-        1 < path.length ? set(path.slice(1), value, source[path[0]], {}) : value
-      return copy(source, target)
-    }
-    return value
-  }
-
-  function get(path, source) {
-    for (var i = 0; i < path.length; i++) {
-      source = source[path[i]]
-    }
-    return source
-  }
-
-  function init(path, slice, actions) {
-    for (var key in actions) {
-      typeof actions[key] === "function"
-        ? (function(key, action) {
-            actions[key] = function(data) {
-              slice = get(path, state)
-
-              if (typeof (data = action(data)) === "function") {
-                data = data(slice, actions)
-              }
-
-              if (data && data !== slice && !data.then) {
-                repaint((state = set(path, copy(slice, data), state, {})))
-              }
-
-              return data
-            }
-          })(key, actions[key])
-        : init(
-            path.concat(key),
-            (slice[key] = slice[key] || {}),
-            (actions[key] = copy(actions[key]))
-          )
-    }
-  }
-
-  function getKey(node) {
-    return node && node.props ? node.props.key : null
-  }
-
-  function setElementProp(element, name, value, oldValue) {
-    if (name === "key") {
-    } else if (name === "style") {
-      for (var i in copy(oldValue, value)) {
-        element[name][i] = value == null || value[i] == null ? "" : value[i]
-      }
-    } else {
-      try {
-        element[name] = value == null ? "" : value
-      } catch (_) {}
-
-      if (typeof value !== "function") {
-        if (value == null || value === false) {
-          element.removeAttribute(name)
-        } else {
-          element.setAttribute(name, value)
-        }
-      }
-    }
-  }
-
-  function createElement(node, isSVG) {
-    var element =
-      typeof node === "string" || typeof node === "number"
-        ? document.createTextNode(node)
-        : (isSVG = isSVG || node.name === "svg")
-          ? document.createElementNS("http://www.w3.org/2000/svg", node.name)
-          : document.createElement(node.name)
-
-    if (node.props) {
-      if (node.props.oncreate) {
-        lifecycle.push(function() {
-          node.props.oncreate(element)
-        })
-      }
-
-      for (var i = 0; i < node.children.length; i++) {
-        element.appendChild(createElement(node.children[i], isSVG))
-      }
-
-      for (var name in node.props) {
-        setElementProp(element, name, node.props[name])
-      }
-    }
-
-    return element
-  }
-
-  function updateElement(element, oldProps, props) {
-    for (var name in copy(oldProps, props)) {
-      if (
-        props[name] !==
-        (name === "value" || name === "checked"
-          ? element[name]
-          : oldProps[name])
-      ) {
-        setElementProp(element, name, props[name], oldProps[name])
-      }
-    }
-
-    if (props.onupdate) {
-      lifecycle.push(function() {
-        props.onupdate(element, oldProps)
-      })
-    }
-  }
-
-  function removeChildren(element, node, props) {
-    if ((props = node.props)) {
-      for (var i = 0; i < node.children.length; i++) {
-        removeChildren(element.childNodes[i], node.children[i])
-      }
-
-      if (props.ondestroy) {
-        props.ondestroy(element)
-      }
-    }
-    return element
-  }
-
-  function removeElement(parent, element, node, cb) {
-    function done() {
-      parent.removeChild(removeChildren(element, node))
-    }
-
-    if (node.props && (cb = node.props.onremove)) {
-      cb(element, done)
-    } else {
-      done()
-    }
-  }
-
-  function patch(parent, element, oldNode, node, isSVG, nextSibling) {
-    if (node === oldNode) {
-    } else if (oldNode == null) {
-      element = parent.insertBefore(createElement(node, isSVG), element)
-    } else if (node.name && node.name === oldNode.name) {
-      updateElement(element, oldNode.props, node.props)
-
-      var oldElements = []
-      var oldKeyed = {}
-      var newKeyed = {}
-
-      for (var i = 0; i < oldNode.children.length; i++) {
-        oldElements[i] = element.childNodes[i]
-
-        var oldChild = oldNode.children[i]
-        var oldKey = getKey(oldChild)
-
-        if (null != oldKey) {
-          oldKeyed[oldKey] = [oldElements[i], oldChild]
-        }
-      }
-
-      var i = 0
-      var j = 0
-
-      while (j < node.children.length) {
-        var oldChild = oldNode.children[i]
-        var newChild = node.children[j]
-
-        var oldKey = getKey(oldChild)
-        var newKey = getKey(newChild)
-
-        if (newKeyed[oldKey]) {
-          i++
-          continue
-        }
-
-        if (newKey == null) {
-          if (oldKey == null) {
-            patch(element, oldElements[i], oldChild, newChild, isSVG)
-            j++
-          }
-          i++
-        } else {
-          var recyledNode = oldKeyed[newKey] || []
-
-          if (oldKey === newKey) {
-            patch(element, recyledNode[0], recyledNode[1], newChild, isSVG)
-            i++
-          } else if (recyledNode[0]) {
-            patch(
-              element,
-              element.insertBefore(recyledNode[0], oldElements[i]),
-              recyledNode[1],
-              newChild,
-              isSVG
-            )
-          } else {
-            patch(element, oldElements[i], null, newChild, isSVG)
-          }
-
-          j++
-          newKeyed[newKey] = newChild
-        }
-      }
-
-      while (i < oldNode.children.length) {
-        var oldChild = oldNode.children[i]
-        if (getKey(oldChild) == null) {
-          removeElement(element, oldElements[i], oldChild)
-        }
-        i++
-      }
-
-      for (var i in oldKeyed) {
-        if (!newKeyed[oldKeyed[i][1].props.key]) {
-          removeElement(element, oldKeyed[i][0], oldKeyed[i][1])
-        }
-      }
-    } else if (node.name === oldNode.name) {
-      element.nodeValue = node
-    } else {
-      element = parent.insertBefore(
-        createElement(node, isSVG),
-        (nextSibling = element)
-      )
-      removeElement(parent, nextSibling, oldNode)
-    }
-    return element
-  }
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return a; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"abbr\", function() { return abbr; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"address\", function() { return address; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"area\", function() { return area; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"article\", function() { return article; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"aside\", function() { return aside; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"audio\", function() { return audio; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return b; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bdi\", function() { return bdi; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bdo\", function() { return bdo; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"blockquote\", function() { return blockquote; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"br\", function() { return br; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"button\", function() { return button; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"canvas\", function() { return canvas; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"caption\", function() { return caption; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"cite\", function() { return cite; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"code\", function() { return code; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"col\", function() { return col; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"colgroup\", function() { return colgroup; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"data\", function() { return data; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"datalist\", function() { return datalist; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dd\", function() { return dd; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"del\", function() { return del; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"details\", function() { return details; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dfn\", function() { return dfn; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dialog\", function() { return dialog; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"div\", function() { return div; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dl\", function() { return dl; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dt\", function() { return dt; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"em\", function() { return em; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"embed\", function() { return embed; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"fieldset\", function() { return fieldset; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"figcaption\", function() { return figcaption; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"figure\", function() { return figure; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"footer\", function() { return footer; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"form\", function() { return form; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h1\", function() { return h1; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h2\", function() { return h2; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h3\", function() { return h3; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h4\", function() { return h4; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h5\", function() { return h5; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h6\", function() { return h6; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"header\", function() { return header; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"hr\", function() { return hr; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"i\", function() { return i; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"img\", function() { return img; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"input\", function() { return input; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ins\", function() { return ins; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"kbd\", function() { return kbd; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"label\", function() { return label; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"legend\", function() { return legend; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"li\", function() { return li; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"main\", function() { return main; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"map\", function() { return map; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"mark\", function() { return mark; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"menu\", function() { return menu; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"menuitem\", function() { return menuitem; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"meter\", function() { return meter; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"nav\", function() { return nav; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"object\", function() { return object; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ol\", function() { return ol; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"optgroup\", function() { return optgroup; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"option\", function() { return option; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"output\", function() { return output; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"p\", function() { return p; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"param\", function() { return param; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"pre\", function() { return pre; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"progress\", function() { return progress; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"q\", function() { return q; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"rp\", function() { return rp; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"rt\", function() { return rt; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"rtc\", function() { return rtc; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ruby\", function() { return ruby; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"s\", function() { return s; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"samp\", function() { return samp; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"section\", function() { return section; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"select\", function() { return select; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"small\", function() { return small; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"source\", function() { return source; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"span\", function() { return span; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"strong\", function() { return strong; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"sub\", function() { return sub; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"summary\", function() { return summary; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"sup\", function() { return sup; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"svg\", function() { return svg; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"table\", function() { return table; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tbody\", function() { return tbody; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"td\", function() { return td; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"textarea\", function() { return textarea; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tfoot\", function() { return tfoot; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"th\", function() { return th; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"thead\", function() { return thead; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"time\", function() { return time; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tr\", function() { return tr; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return track; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"u\", function() { return u; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ul\", function() { return ul; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"video\", function() { return video; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"vvar\", function() { return vvar; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"wbr\", function() { return wbr; });\n/* harmony import */ var hyperapp__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\n\n\nfunction vnode(tag) {\n  return function (props, children) {\n    return typeof props === \"object\" && !Array.isArray(props)\n      ? Object(hyperapp__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(tag, props, children)\n      : Object(hyperapp__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(tag, {}, props)\n  }\n}\n\n\nfunction a(props, children) {\n  return vnode(\"a\")(props, children)\n}\n\nfunction abbr(props, children) {\n  return vnode(\"abbr\")(props, children)\n}\n\nfunction address(props, children) {\n  return vnode(\"address\")(props, children)\n}\n\nfunction area(props, children) {\n  return vnode(\"area\")(props, children)\n}\n\nfunction article(props, children) {\n  return vnode(\"article\")(props, children)\n}\n\nfunction aside(props, children) {\n  return vnode(\"aside\")(props, children)\n}\n\nfunction audio(props, children) {\n  return vnode(\"audio\")(props, children)\n}\n\nfunction b(props, children) {\n  return vnode(\"b\")(props, children)\n}\n\nfunction bdi(props, children) {\n  return vnode(\"bdi\")(props, children)\n}\n\nfunction bdo(props, children) {\n  return vnode(\"bdo\")(props, children)\n}\n\nfunction blockquote(props, children) {\n  return vnode(\"blockquote\")(props, children)\n}\n\nfunction br(props, children) {\n  return vnode(\"br\")(props, children)\n}\n\nfunction button(props, children) {\n  return vnode(\"button\")(props, children)\n}\n\nfunction canvas(props, children) {\n  return vnode(\"canvas\")(props, children)\n}\n\nfunction caption(props, children) {\n  return vnode(\"caption\")(props, children)\n}\n\nfunction cite(props, children) {\n  return vnode(\"cite\")(props, children)\n}\n\nfunction code(props, children) {\n  return vnode(\"code\")(props, children)\n}\n\nfunction col(props, children) {\n  return vnode(\"col\")(props, children)\n}\n\nfunction colgroup(props, children) {\n  return vnode(\"colgroup\")(props, children)\n}\n\nfunction data(props, children) {\n  return vnode(\"data\")(props, children)\n}\n\nfunction datalist(props, children) {\n  return vnode(\"datalist\")(props, children)\n}\n\nfunction dd(props, children) {\n  return vnode(\"dd\")(props, children)\n}\n\nfunction del(props, children) {\n  return vnode(\"del\")(props, children)\n}\n\nfunction details(props, children) {\n  return vnode(\"details\")(props, children)\n}\n\nfunction dfn(props, children) {\n  return vnode(\"dfn\")(props, children)\n}\n\nfunction dialog(props, children) {\n  return vnode(\"dialog\")(props, children)\n}\n\nfunction div(props, children) {\n  return vnode(\"div\")(props, children)\n}\n\nfunction dl(props, children) {\n  return vnode(\"dl\")(props, children)\n}\n\nfunction dt(props, children) {\n  return vnode(\"dt\")(props, children)\n}\n\nfunction em(props, children) {\n  return vnode(\"em\")(props, children)\n}\n\nfunction embed(props, children) {\n  return vnode(\"embed\")(props, children)\n}\n\nfunction fieldset(props, children) {\n  return vnode(\"fieldset\")(props, children)\n}\n\nfunction figcaption(props, children) {\n  return vnode(\"figcaption\")(props, children)\n}\n\nfunction figure(props, children) {\n  return vnode(\"figure\")(props, children)\n}\n\nfunction footer(props, children) {\n  return vnode(\"footer\")(props, children)\n}\n\nfunction form(props, children) {\n  return vnode(\"form\")(props, children)\n}\n\nfunction h1(props, children) {\n  return vnode(\"h1\")(props, children)\n}\n\nfunction h2(props, children) {\n  return vnode(\"h2\")(props, children)\n}\n\nfunction h3(props, children) {\n  return vnode(\"h3\")(props, children)\n}\n\nfunction h4(props, children) {\n  return vnode(\"h4\")(props, children)\n}\n\nfunction h5(props, children) {\n  return vnode(\"h5\")(props, children)\n}\n\nfunction h6(props, children) {\n  return vnode(\"h6\")(props, children)\n}\n\nfunction header(props, children) {\n  return vnode(\"header\")(props, children)\n}\n\nfunction hr(props, children) {\n  return vnode(\"hr\")(props, children)\n}\n\nfunction i(props, children) {\n  return vnode(\"i\")(props, children)\n}\n\nfunction img(props, children) {\n  return vnode(\"img\")(props, children)\n}\n\nfunction input(props, children) {\n  return vnode(\"input\")(props, children)\n}\n\nfunction ins(props, children) {\n  return vnode(\"ins\")(props, children)\n}\n\nfunction kbd(props, children) {\n  return vnode(\"kbd\")(props, children)\n}\n\nfunction label(props, children) {\n  return vnode(\"label\")(props, children)\n}\n\nfunction legend(props, children) {\n  return vnode(\"legend\")(props, children)\n}\n\nfunction li(props, children) {\n  return vnode(\"li\")(props, children)\n}\n\nfunction main(props, children) {\n  return vnode(\"main\")(props, children)\n}\n\nfunction map(props, children) {\n  return vnode(\"map\")(props, children)\n}\n\nfunction mark(props, children) {\n  return vnode(\"mark\")(props, children)\n}\n\nfunction menu(props, children) {\n  return vnode(\"menu\")(props, children)\n}\n\nfunction menuitem(props, children) {\n  return vnode(\"menuitem\")(props, children)\n}\n\nfunction meter(props, children) {\n  return vnode(\"meter\")(props, children)\n}\n\nfunction nav(props, children) {\n  return vnode(\"nav\")(props, children)\n}\n\nfunction object(props, children) {\n  return vnode(\"object\")(props, children)\n}\n\nfunction ol(props, children) {\n  return vnode(\"ol\")(props, children)\n}\n\nfunction optgroup(props, children) {\n  return vnode(\"optgroup\")(props, children)\n}\n\nfunction option(props, children) {\n  return vnode(\"option\")(props, children)\n}\n\nfunction output(props, children) {\n  return vnode(\"output\")(props, children)\n}\n\nfunction p(props, children) {\n  return vnode(\"p\")(props, children)\n}\n\nfunction param(props, children) {\n  return vnode(\"param\")(props, children)\n}\n\nfunction pre(props, children) {\n  return vnode(\"pre\")(props, children)\n}\n\nfunction progress(props, children) {\n  return vnode(\"progress\")(props, children)\n}\n\nfunction q(props, children) {\n  return vnode(\"q\")(props, children)\n}\n\nfunction rp(props, children) {\n  return vnode(\"rp\")(props, children)\n}\n\nfunction rt(props, children) {\n  return vnode(\"rt\")(props, children)\n}\n\nfunction rtc(props, children) {\n  return vnode(\"rtc\")(props, children)\n}\n\nfunction ruby(props, children) {\n  return vnode(\"ruby\")(props, children)\n}\n\nfunction s(props, children) {\n  return vnode(\"s\")(props, children)\n}\n\nfunction samp(props, children) {\n  return vnode(\"samp\")(props, children)\n}\n\nfunction section(props, children) {\n  return vnode(\"section\")(props, children)\n}\n\nfunction select(props, children) {\n  return vnode(\"select\")(props, children)\n}\n\nfunction small(props, children) {\n  return vnode(\"small\")(props, children)\n}\n\nfunction source(props, children) {\n  return vnode(\"source\")(props, children)\n}\n\nfunction span(props, children) {\n  return vnode(\"span\")(props, children)\n}\n\nfunction strong(props, children) {\n  return vnode(\"strong\")(props, children)\n}\n\nfunction sub(props, children) {\n  return vnode(\"sub\")(props, children)\n}\n\nfunction summary(props, children) {\n  return vnode(\"summary\")(props, children)\n}\n\nfunction sup(props, children) {\n  return vnode(\"sup\")(props, children)\n}\n\nfunction svg(props, children) {\n  return vnode(\"svg\")(props, children)\n}\n\nfunction table(props, children) {\n  return vnode(\"table\")(props, children)\n}\n\nfunction tbody(props, children) {\n  return vnode(\"tbody\")(props, children)\n}\n\nfunction td(props, children) {\n  return vnode(\"td\")(props, children)\n}\n\nfunction textarea(props, children) {\n  return vnode(\"textarea\")(props, children)\n}\n\nfunction tfoot(props, children) {\n  return vnode(\"tfoot\")(props, children)\n}\n\nfunction th(props, children) {\n  return vnode(\"th\")(props, children)\n}\n\nfunction thead(props, children) {\n  return vnode(\"thead\")(props, children)\n}\n\nfunction time(props, children) {\n  return vnode(\"time\")(props, children)\n}\n\nfunction tr(props, children) {\n  return vnode(\"tr\")(props, children)\n}\n\nfunction track(props, children) {\n  return vnode(\"track\")(props, children)\n}\n\nfunction u(props, children) {\n  return vnode(\"u\")(props, children)\n}\n\nfunction ul(props, children) {\n  return vnode(\"ul\")(props, children)\n}\n\nfunction video(props, children) {\n  return vnode(\"video\")(props, children)\n}\n\nfunction vvar(props, children) {\n  return vnode(\"vvar\")(props, children)\n}\n\nfunction wbr(props, children) {\n  return vnode(\"wbr\")(props, children)\n}\n\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/html/dist/html.js?");
 
 /***/ }),
-/* 1 */
+
+/***/ "./node_modules/@hyperapp/router/src/Link.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/Link.js ***!
+  \***************************************************/
+/*! exports provided: Link */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Link__ = __webpack_require__(5);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_0__Link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Route__ = __webpack_require__(6);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_1__Route__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Switch__ = __webpack_require__(8);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_2__Switch__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Redirect__ = __webpack_require__(9);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_3__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__location__ = __webpack_require__(10);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "location", function() { return __WEBPACK_IMPORTED_MODULE_4__location__["a"]; });
-
-
-
-
-
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Link\", function() { return Link; });\n/* harmony import */ var hyperapp__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\n\n\nfunction Link(props, children) {\n  var to = props.to\n  var location = props.location || window.location\n\n  props.href = to\n  props.onclick = function(e) {\n    if (\n      e.button !== 0 ||\n      e.altKey ||\n      e.metaKey ||\n      e.ctrlKey ||\n      e.shiftKey ||\n      props.target === \"_blank\" ||\n      e.currentTarget.origin !== location.origin\n    ) {\n    } else {\n      e.preventDefault()\n\n      if (to !== location.pathname) {\n        history.pushState(location.pathname, \"\", to)\n      }\n    }\n  }\n\n  return Object(hyperapp__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(\"a\", props, children)\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/Link.js?");
 
 /***/ }),
-/* 2 */
+
+/***/ "./node_modules/@hyperapp/router/src/Redirect.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/Redirect.js ***!
+  \*******************************************************/
+/*! exports provided: Redirect */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["a"] = a;
-/* harmony export (immutable) */ __webpack_exports__["abbr"] = abbr;
-/* harmony export (immutable) */ __webpack_exports__["address"] = address;
-/* harmony export (immutable) */ __webpack_exports__["area"] = area;
-/* harmony export (immutable) */ __webpack_exports__["article"] = article;
-/* harmony export (immutable) */ __webpack_exports__["aside"] = aside;
-/* harmony export (immutable) */ __webpack_exports__["audio"] = audio;
-/* harmony export (immutable) */ __webpack_exports__["b"] = b;
-/* harmony export (immutable) */ __webpack_exports__["bdi"] = bdi;
-/* harmony export (immutable) */ __webpack_exports__["bdo"] = bdo;
-/* harmony export (immutable) */ __webpack_exports__["blockquote"] = blockquote;
-/* harmony export (immutable) */ __webpack_exports__["br"] = br;
-/* harmony export (immutable) */ __webpack_exports__["button"] = button;
-/* harmony export (immutable) */ __webpack_exports__["canvas"] = canvas;
-/* harmony export (immutable) */ __webpack_exports__["caption"] = caption;
-/* harmony export (immutable) */ __webpack_exports__["cite"] = cite;
-/* harmony export (immutable) */ __webpack_exports__["code"] = code;
-/* harmony export (immutable) */ __webpack_exports__["col"] = col;
-/* harmony export (immutable) */ __webpack_exports__["colgroup"] = colgroup;
-/* harmony export (immutable) */ __webpack_exports__["data"] = data;
-/* harmony export (immutable) */ __webpack_exports__["datalist"] = datalist;
-/* harmony export (immutable) */ __webpack_exports__["dd"] = dd;
-/* harmony export (immutable) */ __webpack_exports__["del"] = del;
-/* harmony export (immutable) */ __webpack_exports__["details"] = details;
-/* harmony export (immutable) */ __webpack_exports__["dfn"] = dfn;
-/* harmony export (immutable) */ __webpack_exports__["dialog"] = dialog;
-/* harmony export (immutable) */ __webpack_exports__["div"] = div;
-/* harmony export (immutable) */ __webpack_exports__["dl"] = dl;
-/* harmony export (immutable) */ __webpack_exports__["dt"] = dt;
-/* harmony export (immutable) */ __webpack_exports__["em"] = em;
-/* harmony export (immutable) */ __webpack_exports__["embed"] = embed;
-/* harmony export (immutable) */ __webpack_exports__["fieldset"] = fieldset;
-/* harmony export (immutable) */ __webpack_exports__["figcaption"] = figcaption;
-/* harmony export (immutable) */ __webpack_exports__["figure"] = figure;
-/* harmony export (immutable) */ __webpack_exports__["footer"] = footer;
-/* harmony export (immutable) */ __webpack_exports__["form"] = form;
-/* harmony export (immutable) */ __webpack_exports__["h1"] = h1;
-/* harmony export (immutable) */ __webpack_exports__["h2"] = h2;
-/* harmony export (immutable) */ __webpack_exports__["h3"] = h3;
-/* harmony export (immutable) */ __webpack_exports__["h4"] = h4;
-/* harmony export (immutable) */ __webpack_exports__["h5"] = h5;
-/* harmony export (immutable) */ __webpack_exports__["h6"] = h6;
-/* harmony export (immutable) */ __webpack_exports__["header"] = header;
-/* harmony export (immutable) */ __webpack_exports__["hr"] = hr;
-/* harmony export (immutable) */ __webpack_exports__["i"] = i;
-/* harmony export (immutable) */ __webpack_exports__["img"] = img;
-/* harmony export (immutable) */ __webpack_exports__["input"] = input;
-/* harmony export (immutable) */ __webpack_exports__["ins"] = ins;
-/* harmony export (immutable) */ __webpack_exports__["kbd"] = kbd;
-/* harmony export (immutable) */ __webpack_exports__["label"] = label;
-/* harmony export (immutable) */ __webpack_exports__["legend"] = legend;
-/* harmony export (immutable) */ __webpack_exports__["li"] = li;
-/* harmony export (immutable) */ __webpack_exports__["main"] = main;
-/* harmony export (immutable) */ __webpack_exports__["map"] = map;
-/* harmony export (immutable) */ __webpack_exports__["mark"] = mark;
-/* harmony export (immutable) */ __webpack_exports__["menu"] = menu;
-/* harmony export (immutable) */ __webpack_exports__["menuitem"] = menuitem;
-/* harmony export (immutable) */ __webpack_exports__["meter"] = meter;
-/* harmony export (immutable) */ __webpack_exports__["nav"] = nav;
-/* harmony export (immutable) */ __webpack_exports__["object"] = object;
-/* harmony export (immutable) */ __webpack_exports__["ol"] = ol;
-/* harmony export (immutable) */ __webpack_exports__["optgroup"] = optgroup;
-/* harmony export (immutable) */ __webpack_exports__["option"] = option;
-/* harmony export (immutable) */ __webpack_exports__["output"] = output;
-/* harmony export (immutable) */ __webpack_exports__["p"] = p;
-/* harmony export (immutable) */ __webpack_exports__["param"] = param;
-/* harmony export (immutable) */ __webpack_exports__["pre"] = pre;
-/* harmony export (immutable) */ __webpack_exports__["progress"] = progress;
-/* harmony export (immutable) */ __webpack_exports__["q"] = q;
-/* harmony export (immutable) */ __webpack_exports__["rp"] = rp;
-/* harmony export (immutable) */ __webpack_exports__["rt"] = rt;
-/* harmony export (immutable) */ __webpack_exports__["rtc"] = rtc;
-/* harmony export (immutable) */ __webpack_exports__["ruby"] = ruby;
-/* harmony export (immutable) */ __webpack_exports__["s"] = s;
-/* harmony export (immutable) */ __webpack_exports__["samp"] = samp;
-/* harmony export (immutable) */ __webpack_exports__["section"] = section;
-/* harmony export (immutable) */ __webpack_exports__["select"] = select;
-/* harmony export (immutable) */ __webpack_exports__["small"] = small;
-/* harmony export (immutable) */ __webpack_exports__["source"] = source;
-/* harmony export (immutable) */ __webpack_exports__["span"] = span;
-/* harmony export (immutable) */ __webpack_exports__["strong"] = strong;
-/* harmony export (immutable) */ __webpack_exports__["sub"] = sub;
-/* harmony export (immutable) */ __webpack_exports__["summary"] = summary;
-/* harmony export (immutable) */ __webpack_exports__["sup"] = sup;
-/* harmony export (immutable) */ __webpack_exports__["svg"] = svg;
-/* harmony export (immutable) */ __webpack_exports__["table"] = table;
-/* harmony export (immutable) */ __webpack_exports__["tbody"] = tbody;
-/* harmony export (immutable) */ __webpack_exports__["td"] = td;
-/* harmony export (immutable) */ __webpack_exports__["textarea"] = textarea;
-/* harmony export (immutable) */ __webpack_exports__["tfoot"] = tfoot;
-/* harmony export (immutable) */ __webpack_exports__["th"] = th;
-/* harmony export (immutable) */ __webpack_exports__["thead"] = thead;
-/* harmony export (immutable) */ __webpack_exports__["time"] = time;
-/* harmony export (immutable) */ __webpack_exports__["tr"] = tr;
-/* harmony export (immutable) */ __webpack_exports__["track"] = track;
-/* harmony export (immutable) */ __webpack_exports__["u"] = u;
-/* harmony export (immutable) */ __webpack_exports__["ul"] = ul;
-/* harmony export (immutable) */ __webpack_exports__["video"] = video;
-/* harmony export (immutable) */ __webpack_exports__["vvar"] = vvar;
-/* harmony export (immutable) */ __webpack_exports__["wbr"] = wbr;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hyperapp__ = __webpack_require__(0);
-
-
-function vnode(tag) {
-  return function (props, children) {
-    return typeof props === "object" && !Array.isArray(props)
-      ? Object(__WEBPACK_IMPORTED_MODULE_0_hyperapp__["h"])(tag, props, children)
-      : Object(__WEBPACK_IMPORTED_MODULE_0_hyperapp__["h"])(tag, {}, props)
-  }
-}
-
-
-function a(props, children) {
-  return vnode("a")(props, children)
-}
-
-function abbr(props, children) {
-  return vnode("abbr")(props, children)
-}
-
-function address(props, children) {
-  return vnode("address")(props, children)
-}
-
-function area(props, children) {
-  return vnode("area")(props, children)
-}
-
-function article(props, children) {
-  return vnode("article")(props, children)
-}
-
-function aside(props, children) {
-  return vnode("aside")(props, children)
-}
-
-function audio(props, children) {
-  return vnode("audio")(props, children)
-}
-
-function b(props, children) {
-  return vnode("b")(props, children)
-}
-
-function bdi(props, children) {
-  return vnode("bdi")(props, children)
-}
-
-function bdo(props, children) {
-  return vnode("bdo")(props, children)
-}
-
-function blockquote(props, children) {
-  return vnode("blockquote")(props, children)
-}
-
-function br(props, children) {
-  return vnode("br")(props, children)
-}
-
-function button(props, children) {
-  return vnode("button")(props, children)
-}
-
-function canvas(props, children) {
-  return vnode("canvas")(props, children)
-}
-
-function caption(props, children) {
-  return vnode("caption")(props, children)
-}
-
-function cite(props, children) {
-  return vnode("cite")(props, children)
-}
-
-function code(props, children) {
-  return vnode("code")(props, children)
-}
-
-function col(props, children) {
-  return vnode("col")(props, children)
-}
-
-function colgroup(props, children) {
-  return vnode("colgroup")(props, children)
-}
-
-function data(props, children) {
-  return vnode("data")(props, children)
-}
-
-function datalist(props, children) {
-  return vnode("datalist")(props, children)
-}
-
-function dd(props, children) {
-  return vnode("dd")(props, children)
-}
-
-function del(props, children) {
-  return vnode("del")(props, children)
-}
-
-function details(props, children) {
-  return vnode("details")(props, children)
-}
-
-function dfn(props, children) {
-  return vnode("dfn")(props, children)
-}
-
-function dialog(props, children) {
-  return vnode("dialog")(props, children)
-}
-
-function div(props, children) {
-  return vnode("div")(props, children)
-}
-
-function dl(props, children) {
-  return vnode("dl")(props, children)
-}
-
-function dt(props, children) {
-  return vnode("dt")(props, children)
-}
-
-function em(props, children) {
-  return vnode("em")(props, children)
-}
-
-function embed(props, children) {
-  return vnode("embed")(props, children)
-}
-
-function fieldset(props, children) {
-  return vnode("fieldset")(props, children)
-}
-
-function figcaption(props, children) {
-  return vnode("figcaption")(props, children)
-}
-
-function figure(props, children) {
-  return vnode("figure")(props, children)
-}
-
-function footer(props, children) {
-  return vnode("footer")(props, children)
-}
-
-function form(props, children) {
-  return vnode("form")(props, children)
-}
-
-function h1(props, children) {
-  return vnode("h1")(props, children)
-}
-
-function h2(props, children) {
-  return vnode("h2")(props, children)
-}
-
-function h3(props, children) {
-  return vnode("h3")(props, children)
-}
-
-function h4(props, children) {
-  return vnode("h4")(props, children)
-}
-
-function h5(props, children) {
-  return vnode("h5")(props, children)
-}
-
-function h6(props, children) {
-  return vnode("h6")(props, children)
-}
-
-function header(props, children) {
-  return vnode("header")(props, children)
-}
-
-function hr(props, children) {
-  return vnode("hr")(props, children)
-}
-
-function i(props, children) {
-  return vnode("i")(props, children)
-}
-
-function img(props, children) {
-  return vnode("img")(props, children)
-}
-
-function input(props, children) {
-  return vnode("input")(props, children)
-}
-
-function ins(props, children) {
-  return vnode("ins")(props, children)
-}
-
-function kbd(props, children) {
-  return vnode("kbd")(props, children)
-}
-
-function label(props, children) {
-  return vnode("label")(props, children)
-}
-
-function legend(props, children) {
-  return vnode("legend")(props, children)
-}
-
-function li(props, children) {
-  return vnode("li")(props, children)
-}
-
-function main(props, children) {
-  return vnode("main")(props, children)
-}
-
-function map(props, children) {
-  return vnode("map")(props, children)
-}
-
-function mark(props, children) {
-  return vnode("mark")(props, children)
-}
-
-function menu(props, children) {
-  return vnode("menu")(props, children)
-}
-
-function menuitem(props, children) {
-  return vnode("menuitem")(props, children)
-}
-
-function meter(props, children) {
-  return vnode("meter")(props, children)
-}
-
-function nav(props, children) {
-  return vnode("nav")(props, children)
-}
-
-function object(props, children) {
-  return vnode("object")(props, children)
-}
-
-function ol(props, children) {
-  return vnode("ol")(props, children)
-}
-
-function optgroup(props, children) {
-  return vnode("optgroup")(props, children)
-}
-
-function option(props, children) {
-  return vnode("option")(props, children)
-}
-
-function output(props, children) {
-  return vnode("output")(props, children)
-}
-
-function p(props, children) {
-  return vnode("p")(props, children)
-}
-
-function param(props, children) {
-  return vnode("param")(props, children)
-}
-
-function pre(props, children) {
-  return vnode("pre")(props, children)
-}
-
-function progress(props, children) {
-  return vnode("progress")(props, children)
-}
-
-function q(props, children) {
-  return vnode("q")(props, children)
-}
-
-function rp(props, children) {
-  return vnode("rp")(props, children)
-}
-
-function rt(props, children) {
-  return vnode("rt")(props, children)
-}
-
-function rtc(props, children) {
-  return vnode("rtc")(props, children)
-}
-
-function ruby(props, children) {
-  return vnode("ruby")(props, children)
-}
-
-function s(props, children) {
-  return vnode("s")(props, children)
-}
-
-function samp(props, children) {
-  return vnode("samp")(props, children)
-}
-
-function section(props, children) {
-  return vnode("section")(props, children)
-}
-
-function select(props, children) {
-  return vnode("select")(props, children)
-}
-
-function small(props, children) {
-  return vnode("small")(props, children)
-}
-
-function source(props, children) {
-  return vnode("source")(props, children)
-}
-
-function span(props, children) {
-  return vnode("span")(props, children)
-}
-
-function strong(props, children) {
-  return vnode("strong")(props, children)
-}
-
-function sub(props, children) {
-  return vnode("sub")(props, children)
-}
-
-function summary(props, children) {
-  return vnode("summary")(props, children)
-}
-
-function sup(props, children) {
-  return vnode("sup")(props, children)
-}
-
-function svg(props, children) {
-  return vnode("svg")(props, children)
-}
-
-function table(props, children) {
-  return vnode("table")(props, children)
-}
-
-function tbody(props, children) {
-  return vnode("tbody")(props, children)
-}
-
-function td(props, children) {
-  return vnode("td")(props, children)
-}
-
-function textarea(props, children) {
-  return vnode("textarea")(props, children)
-}
-
-function tfoot(props, children) {
-  return vnode("tfoot")(props, children)
-}
-
-function th(props, children) {
-  return vnode("th")(props, children)
-}
-
-function thead(props, children) {
-  return vnode("thead")(props, children)
-}
-
-function time(props, children) {
-  return vnode("time")(props, children)
-}
-
-function tr(props, children) {
-  return vnode("tr")(props, children)
-}
-
-function track(props, children) {
-  return vnode("track")(props, children)
-}
-
-function u(props, children) {
-  return vnode("u")(props, children)
-}
-
-function ul(props, children) {
-  return vnode("ul")(props, children)
-}
-
-function video(props, children) {
-  return vnode("video")(props, children)
-}
-
-function vvar(props, children) {
-  return vnode("vvar")(props, children)
-}
-
-function wbr(props, children) {
-  return vnode("wbr")(props, children)
-}
-
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Redirect\", function() { return Redirect; });\nfunction Redirect(props) {\n  var location = props.location || window.location\n  history.replaceState(props.from || location.pathname, \"\", props.to)\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/Redirect.js?");
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var hyperapp_1 = __webpack_require__(0);
-var router_1 = __webpack_require__(1);
-exports.Route = function (_a, children) {
-    var parent = _a.parent, path = _a.path;
-    return hyperapp_1.h(router_1.Route, { parent: parent, path: path, render: function () { return children; } });
-};
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var _this = this;
-Object.defineProperty(exports, "__esModule", { value: true });
-var hyperapp_1 = __webpack_require__(0);
-var router_1 = __webpack_require__(1);
-__webpack_require__(2);
-__webpack_require__(11);
-var Config_1 = __webpack_require__(12);
-var Services_1 = __webpack_require__(14);
-var Route_1 = __webpack_require__(3);
-var RSSList_1 = __webpack_require__(15);
-var RSSView_1 = __webpack_require__(16);
-var actions = {
-    fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {
-        var pages;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Services_1.fetchAll(state.config.rsss)];
-                case 1:
-                    pages = _a.sent();
-                    actions.update(pages);
-                    return [2 /*return*/];
-            }
-        });
-    }); }; },
-    update: function (pages) { return function (state) {
-        return {
-            pages: pages,
-        };
-    }; },
-    config: Config_1.configActions,
-    location: router_1.location.actions,
-};
-var state = {
-    location: router_1.location.state,
-    config: {
-        additionalRss: "",
-        rsss: [],
-    },
-    pages: [],
-};
-function view(state, actions) {
-    return (hyperapp_1.h("div", { class: "container" },
-        hyperapp_1.h(Route_1.Route, { path: "/config" },
-            hyperapp_1.h(Config_1.Config, { rsss: state.config.rsss, configActions: actions.config })),
-        hyperapp_1.h(Route_1.Route, { path: "/" },
-            hyperapp_1.h(RSSList_1.RSSList, { pages: state.pages, fetch: actions.fetch })),
-        hyperapp_1.h(RSSView_1.RSSView, { pages: state.pages })));
-}
-var main = hyperapp_1.app(state, actions, view, document.body);
-router_1.location.subscribe(main.location);
-console.log(main);
-main.config.loadRSSEndpoint();
-main.fetch();
-main.location.go("/");
-
-
-/***/ }),
-/* 5 */
+/***/ "./node_modules/@hyperapp/router/src/Route.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/Route.js ***!
+  \****************************************************/
+/*! exports provided: Route */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = Link;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hyperapp__ = __webpack_require__(0);
-
-
-function Link(props, children) {
-  var to = props.to
-  var location = props.location || window.location
-
-  props.href = to
-  props.onclick = function(e) {
-    if (
-      e.button !== 0 ||
-      e.altKey ||
-      e.metaKey ||
-      e.ctrlKey ||
-      e.shiftKey ||
-      props.target === "_blank" ||
-      e.currentTarget.origin !== location.origin
-    ) {
-    } else {
-      e.preventDefault()
-
-      if (to !== location.pathname) {
-        history.pushState(location.pathname, "", to)
-      }
-    }
-  }
-
-  return Object(__WEBPACK_IMPORTED_MODULE_0_hyperapp__["h"])("a", props, children)
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Route\", function() { return Route; });\n/* harmony import */ var _parseRoute__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./parseRoute */ \"./node_modules/@hyperapp/router/src/parseRoute.js\");\n\n\nfunction Route(props) {\n  var location = props.location || window.location\n  var match = Object(_parseRoute__WEBPACK_IMPORTED_MODULE_0__[\"parseRoute\"])(props.path, location.pathname, {\n    exact: !props.parent\n  })\n\n  return (\n    match &&\n    props.render({\n      match: match,\n      location: location\n    })\n  )\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/Route.js?");
 
 /***/ }),
-/* 6 */
+
+/***/ "./node_modules/@hyperapp/router/src/Switch.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/Switch.js ***!
+  \*****************************************************/
+/*! exports provided: Switch */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = Route;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parseRoute__ = __webpack_require__(7);
-
-
-function Route(props) {
-  var location = props.location || window.location
-  var match = Object(__WEBPACK_IMPORTED_MODULE_0__parseRoute__["a" /* parseRoute */])(props.path, location.pathname, {
-    exact: !props.parent
-  })
-
-  return (
-    match &&
-    props.render({
-      match: match,
-      location: location
-    })
-  )
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Switch\", function() { return Switch; });\nfunction Switch(props, children) {\n  return children[0]\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/Switch.js?");
 
 /***/ }),
-/* 7 */
+
+/***/ "./node_modules/@hyperapp/router/src/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/index.js ***!
+  \****************************************************/
+/*! exports provided: Link, Route, Switch, Redirect, location */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = parseRoute;
-function createMatch(isExact, path, url, params) {
-  return {
-    isExact: isExact,
-    path: path,
-    url: url,
-    params: params
-  }
-}
-
-function trimTrailingSlash(url) {
-  for (var len = url.length; "/" === url[--len]; );
-  return url.slice(0, len + 1)
-}
-
-function parseRoute(path, url, options) {
-  if (path === url || !path) {
-    return createMatch(path === url, path, url)
-  }
-
-  var exact = options && options.exact
-  var paths = trimTrailingSlash(path).split("/")
-  var urls = trimTrailingSlash(url).split("/")
-
-  if (paths.length > urls.length || (exact && paths.length < urls.length)) {
-    return
-  }
-
-  for (var i = 0, params = {}, len = paths.length, url = ""; i < len; i++) {
-    if (":" === paths[i][0]) {
-      try {
-        params[paths[i].slice(1)] = urls[i] = decodeURI(urls[i])
-      } catch (_) {
-        continue
-      }
-    } else if (paths[i] !== urls[i]) {
-      return
-    }
-    url += urls[i] + "/"
-  }
-
-  return createMatch(false, path, url.slice(0, -1), params)
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Link */ \"./node_modules/@hyperapp/router/src/Link.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Link\", function() { return _Link__WEBPACK_IMPORTED_MODULE_0__[\"Link\"]; });\n\n/* harmony import */ var _Route__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Route */ \"./node_modules/@hyperapp/router/src/Route.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Route\", function() { return _Route__WEBPACK_IMPORTED_MODULE_1__[\"Route\"]; });\n\n/* harmony import */ var _Switch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Switch */ \"./node_modules/@hyperapp/router/src/Switch.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Switch\", function() { return _Switch__WEBPACK_IMPORTED_MODULE_2__[\"Switch\"]; });\n\n/* harmony import */ var _Redirect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Redirect */ \"./node_modules/@hyperapp/router/src/Redirect.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Redirect\", function() { return _Redirect__WEBPACK_IMPORTED_MODULE_3__[\"Redirect\"]; });\n\n/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./location */ \"./node_modules/@hyperapp/router/src/location.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"location\", function() { return _location__WEBPACK_IMPORTED_MODULE_4__[\"location\"]; });\n\n\n\n\n\n\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/index.js?");
 
 /***/ }),
-/* 8 */
+
+/***/ "./node_modules/@hyperapp/router/src/location.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/location.js ***!
+  \*******************************************************/
+/*! exports provided: location */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = Switch;
-function Switch(props, children) {
-  return children[0]
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"location\", function() { return location; });\nfunction wrapHistory(keys) {\n  return keys.reduce(function(next, key) {\n    var fn = history[key]\n\n    history[key] = function(data, title, url) {\n      fn.call(this, data, title, url)\n      dispatchEvent(new CustomEvent(\"pushstate\", { detail: data }))\n    }\n\n    return function() {\n      history[key] = fn\n      next && next()\n    }\n  }, null)\n}\n\nvar location = {\n  state: {\n    pathname: window.location.pathname,\n    previous: window.location.pathname\n  },\n  actions: {\n    go: function(pathname) {\n      history.pushState(null, \"\", pathname)\n    },\n    set: function(data) {\n      return data\n    }\n  },\n  subscribe: function(actions) {\n    function handleLocationChange(e) {\n      actions.set({\n        pathname: window.location.pathname,\n        previous: e.detail\n          ? (window.location.previous = e.detail)\n          : window.location.previous\n      })\n    }\n\n    var unwrap = wrapHistory([\"pushState\", \"replaceState\"])\n\n    addEventListener(\"pushstate\", handleLocationChange)\n    addEventListener(\"popstate\", handleLocationChange)\n\n    return function() {\n      removeEventListener(\"pushstate\", handleLocationChange)\n      removeEventListener(\"popstate\", handleLocationChange)\n      unwrap()\n    }\n  }\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/location.js?");
 
 /***/ }),
-/* 9 */
+
+/***/ "./node_modules/@hyperapp/router/src/parseRoute.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@hyperapp/router/src/parseRoute.js ***!
+  \*********************************************************/
+/*! exports provided: parseRoute */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = Redirect;
-function Redirect(props) {
-  var location = props.location || window.location
-  history.replaceState(props.from || location.pathname, "", props.to)
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"parseRoute\", function() { return parseRoute; });\nfunction createMatch(isExact, path, url, params) {\n  return {\n    isExact: isExact,\n    path: path,\n    url: url,\n    params: params\n  }\n}\n\nfunction trimTrailingSlash(url) {\n  for (var len = url.length; \"/\" === url[--len]; );\n  return url.slice(0, len + 1)\n}\n\nfunction parseRoute(path, url, options) {\n  if (path === url || !path) {\n    return createMatch(path === url, path, url)\n  }\n\n  var exact = options && options.exact\n  var paths = trimTrailingSlash(path).split(\"/\")\n  var urls = trimTrailingSlash(url).split(\"/\")\n\n  if (paths.length > urls.length || (exact && paths.length < urls.length)) {\n    return\n  }\n\n  for (var i = 0, params = {}, len = paths.length, url = \"\"; i < len; i++) {\n    if (\":\" === paths[i][0]) {\n      try {\n        params[paths[i].slice(1)] = urls[i] = decodeURI(urls[i])\n      } catch (_) {\n        continue\n      }\n    } else if (paths[i] !== urls[i]) {\n      return\n    }\n    url += urls[i] + \"/\"\n  }\n\n  return createMatch(false, path, url.slice(0, -1), params)\n}\n\n\n//# sourceURL=webpack:///./node_modules/@hyperapp/router/src/parseRoute.js?");
 
 /***/ }),
-/* 10 */
+
+/***/ "./node_modules/hyperapp/src/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/hyperapp/src/index.js ***!
+  \********************************************/
+/*! exports provided: h, app */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return location; });
-function wrapHistory(keys) {
-  return keys.reduce(function(next, key) {
-    var fn = history[key]
-
-    history[key] = function(data, title, url) {
-      fn.call(this, data, title, url)
-      dispatchEvent(new CustomEvent("pushstate", { detail: data }))
-    }
-
-    return function() {
-      history[key] = fn
-      next && next()
-    }
-  }, null)
-}
-
-var location = {
-  state: {
-    pathname: window.location.pathname,
-    previous: window.location.pathname
-  },
-  actions: {
-    go: function(pathname) {
-      history.pushState(null, "", pathname)
-    },
-    set: function(data) {
-      return data
-    }
-  },
-  subscribe: function(actions) {
-    function handleLocationChange(e) {
-      actions.set({
-        pathname: window.location.pathname,
-        previous: e.detail
-          ? (window.location.previous = e.detail)
-          : window.location.previous
-      })
-    }
-
-    var unwrap = wrapHistory(["pushState", "replaceState"])
-
-    addEventListener("pushstate", handleLocationChange)
-    addEventListener("popstate", handleLocationChange)
-
-    return function() {
-      removeEventListener("pushstate", handleLocationChange)
-      removeEventListener("popstate", handleLocationChange)
-      unwrap()
-    }
-  }
-}
-
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return h; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"app\", function() { return app; });\nfunction h(name, props) {\n  var node\n  var children = []\n\n  for (var stack = [], i = arguments.length; i-- > 2; ) {\n    stack.push(arguments[i])\n  }\n\n  while (stack.length) {\n    if (Array.isArray((node = stack.pop()))) {\n      for (var i = node.length; i--; ) {\n        stack.push(node[i])\n      }\n    } else if (node == null || node === true || node === false) {\n    } else {\n      children.push(node)\n    }\n  }\n\n  return typeof name === \"string\"\n    ? {\n        name: name,\n        props: props || {},\n        children: children\n      }\n    : name(props || {}, children)\n}\n\nfunction app(state, actions, view, container) {\n  var patchLock\n  var lifecycle = []\n  var root = container && container.children[0]\n  var node = vnode(root, [].map)\n\n  repaint(init([], (state = copy(state)), (actions = copy(actions))))\n\n  return actions\n\n  function vnode(element, map) {\n    return (\n      element && {\n        name: element.nodeName.toLowerCase(),\n        props: {},\n        children: map.call(element.childNodes, function(element) {\n          return element.nodeType === 3\n            ? element.nodeValue\n            : vnode(element, map)\n        })\n      }\n    )\n  }\n\n  function render(next) {\n    patchLock = !patchLock\n    next = view(state, actions)\n\n    if (container && !patchLock) {\n      root = patch(container, root, node, (node = next))\n    }\n\n    while ((next = lifecycle.pop())) next()\n  }\n\n  function repaint() {\n    if (!patchLock) {\n      patchLock = !patchLock\n      setTimeout(render)\n    }\n  }\n\n  function copy(a, b) {\n    var target = {}\n\n    for (var i in a) target[i] = a[i]\n    for (var i in b) target[i] = b[i]\n\n    return target\n  }\n\n  function set(path, value, source, target) {\n    if (path.length) {\n      target[path[0]] =\n        1 < path.length ? set(path.slice(1), value, source[path[0]], {}) : value\n      return copy(source, target)\n    }\n    return value\n  }\n\n  function get(path, source) {\n    for (var i = 0; i < path.length; i++) {\n      source = source[path[i]]\n    }\n    return source\n  }\n\n  function init(path, slice, actions) {\n    for (var key in actions) {\n      typeof actions[key] === \"function\"\n        ? (function(key, action) {\n            actions[key] = function(data) {\n              slice = get(path, state)\n\n              if (typeof (data = action(data)) === \"function\") {\n                data = data(slice, actions)\n              }\n\n              if (data && data !== slice && !data.then) {\n                repaint((state = set(path, copy(slice, data), state, {})))\n              }\n\n              return data\n            }\n          })(key, actions[key])\n        : init(\n            path.concat(key),\n            (slice[key] = slice[key] || {}),\n            (actions[key] = copy(actions[key]))\n          )\n    }\n  }\n\n  function getKey(node) {\n    return node && node.props ? node.props.key : null\n  }\n\n  function setElementProp(element, name, value, oldValue) {\n    if (name === \"key\") {\n    } else if (name === \"style\") {\n      for (var i in copy(oldValue, value)) {\n        element[name][i] = value == null || value[i] == null ? \"\" : value[i]\n      }\n    } else {\n      try {\n        element[name] = value == null ? \"\" : value\n      } catch (_) {}\n\n      if (typeof value !== \"function\") {\n        if (value == null || value === false) {\n          element.removeAttribute(name)\n        } else {\n          element.setAttribute(name, value)\n        }\n      }\n    }\n  }\n\n  function createElement(node, isSVG) {\n    var element =\n      typeof node === \"string\" || typeof node === \"number\"\n        ? document.createTextNode(node)\n        : (isSVG = isSVG || node.name === \"svg\")\n          ? document.createElementNS(\"http://www.w3.org/2000/svg\", node.name)\n          : document.createElement(node.name)\n\n    if (node.props) {\n      if (node.props.oncreate) {\n        lifecycle.push(function() {\n          node.props.oncreate(element)\n        })\n      }\n\n      for (var i = 0; i < node.children.length; i++) {\n        element.appendChild(createElement(node.children[i], isSVG))\n      }\n\n      for (var name in node.props) {\n        setElementProp(element, name, node.props[name])\n      }\n    }\n\n    return element\n  }\n\n  function updateElement(element, oldProps, props) {\n    for (var name in copy(oldProps, props)) {\n      if (\n        props[name] !==\n        (name === \"value\" || name === \"checked\"\n          ? element[name]\n          : oldProps[name])\n      ) {\n        setElementProp(element, name, props[name], oldProps[name])\n      }\n    }\n\n    if (props.onupdate) {\n      lifecycle.push(function() {\n        props.onupdate(element, oldProps)\n      })\n    }\n  }\n\n  function removeChildren(element, node, props) {\n    if ((props = node.props)) {\n      for (var i = 0; i < node.children.length; i++) {\n        removeChildren(element.childNodes[i], node.children[i])\n      }\n\n      if (props.ondestroy) {\n        props.ondestroy(element)\n      }\n    }\n    return element\n  }\n\n  function removeElement(parent, element, node, cb) {\n    function done() {\n      parent.removeChild(removeChildren(element, node))\n    }\n\n    if (node.props && (cb = node.props.onremove)) {\n      cb(element, done)\n    } else {\n      done()\n    }\n  }\n\n  function patch(parent, element, oldNode, node, isSVG, nextSibling) {\n    if (node === oldNode) {\n    } else if (oldNode == null) {\n      element = parent.insertBefore(createElement(node, isSVG), element)\n    } else if (node.name && node.name === oldNode.name) {\n      updateElement(element, oldNode.props, node.props)\n\n      var oldElements = []\n      var oldKeyed = {}\n      var newKeyed = {}\n\n      for (var i = 0; i < oldNode.children.length; i++) {\n        oldElements[i] = element.childNodes[i]\n\n        var oldChild = oldNode.children[i]\n        var oldKey = getKey(oldChild)\n\n        if (null != oldKey) {\n          oldKeyed[oldKey] = [oldElements[i], oldChild]\n        }\n      }\n\n      var i = 0\n      var j = 0\n\n      while (j < node.children.length) {\n        var oldChild = oldNode.children[i]\n        var newChild = node.children[j]\n\n        var oldKey = getKey(oldChild)\n        var newKey = getKey(newChild)\n\n        if (newKeyed[oldKey]) {\n          i++\n          continue\n        }\n\n        if (newKey == null) {\n          if (oldKey == null) {\n            patch(element, oldElements[i], oldChild, newChild, isSVG)\n            j++\n          }\n          i++\n        } else {\n          var recyledNode = oldKeyed[newKey] || []\n\n          if (oldKey === newKey) {\n            patch(element, recyledNode[0], recyledNode[1], newChild, isSVG)\n            i++\n          } else if (recyledNode[0]) {\n            patch(\n              element,\n              element.insertBefore(recyledNode[0], oldElements[i]),\n              recyledNode[1],\n              newChild,\n              isSVG\n            )\n          } else {\n            patch(element, oldElements[i], null, newChild, isSVG)\n          }\n\n          j++\n          newKeyed[newKey] = newChild\n        }\n      }\n\n      while (i < oldNode.children.length) {\n        var oldChild = oldNode.children[i]\n        if (getKey(oldChild) == null) {\n          removeElement(element, oldElements[i], oldChild)\n        }\n        i++\n      }\n\n      for (var i in oldKeyed) {\n        if (!newKeyed[oldKeyed[i][1].props.key]) {\n          removeElement(element, oldKeyed[i][0], oldKeyed[i][1])\n        }\n      }\n    } else if (node.name === oldNode.name) {\n      element.nodeValue = node\n    } else {\n      element = parent.insertBefore(\n        createElement(node, isSVG),\n        (nextSibling = element)\n      )\n      removeElement(parent, nextSibling, oldNode)\n    }\n    return element\n  }\n}\n\n\n//# sourceURL=webpack:///./node_modules/hyperapp/src/index.js?");
 
 /***/ }),
-/* 11 */
+
+/***/ "./node_modules/materialize/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/materialize/index.js ***!
+  \*******************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function materialize(list, key, value) {
-  var ret = {};
-
-  if (list) Array.prototype.forEach.call(list, function(item) {
-    ret[item[key||'name']] = item[value||'value'];
-  });
-
-  return ret;
-};
-
+eval("module.exports = function materialize(list, key, value) {\n  var ret = {};\n\n  if (list) Array.prototype.forEach.call(list, function(item) {\n    ret[item[key||'name']] = item[value||'value'];\n  });\n\n  return ret;\n};\n\n\n//# sourceURL=webpack:///./node_modules/materialize/index.js?");
 
 /***/ }),
-/* 12 */
+
+/***/ "./src/scripts/Components/Config.tsx":
+/*!*******************************************!*\
+  !*** ./src/scripts/Components/Config.tsx ***!
+  \*******************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var hyperapp_1 = __webpack_require__(0);
-var router_1 = __webpack_require__(1);
-__webpack_require__(2);
-var Storage_1 = __webpack_require__(13);
-var cache = {
-    rss: new Storage_1.Storage("rss"),
-};
-exports.configActions = {
-    addRSSEndpoint: function () { return function (state, actions) {
-        if (!cache.rss.get()) {
-            cache.rss.set([]);
-        }
-        cache.rss.set(cache.rss.get().concat([{ url: state.additionalRss }]));
-        return {
-            rsss: cache.rss.get(),
-        };
-    }; },
-    removeRSSEndpoint: function (url) { return function (state, actions) {
-        cache.rss.set(cache.rss.get().filter(function (rss) { return rss.url !== url; }));
-        return {
-            rsss: cache.rss.get(),
-        };
-    }; },
-    updateRSSEndpointUrl: function (_a) {
-        var value = _a.target.value;
-        return function (state) {
-            return {
-                additionalRss: value,
-            };
-        };
-    },
-    loadRSSEndpoint: function () { return function () {
-        return {
-            rsss: cache.rss.get() || [],
-        };
-    }; }
-};
-var Subscribing = function (_a) {
-    var index = _a.index, url = _a.url, removeAction = _a.removeAction;
-    return (hyperapp_1.h("span", null,
-        hyperapp_1.h("span", null, url),
-        hyperapp_1.h("button", { class: "waves-effect waves-light btn right", onclick: function () { return removeAction(url); } }, "x")));
-};
-exports.Config = function (_a) {
-    var configActions = _a.configActions, rsss = _a.rsss;
-    return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/" }, "home"),
-        hyperapp_1.h("div", null, "subscribing"),
-        hyperapp_1.h("ul", { class: "collection" }, rsss.map(function (rss, index) {
-            return hyperapp_1.h("li", { class: "collection-item" },
-                hyperapp_1.h(Subscribing, { url: rss.url, index: index, removeAction: configActions.removeRSSEndpoint }));
-        })),
-        hyperapp_1.h("div", null, "input url"),
-        hyperapp_1.h("input", { oninput: configActions.updateRSSEndpointUrl }),
-        hyperapp_1.h("button", { class: "waves-effect waves-light btn", onclick: configActions.addRSSEndpoint }, "add")));
-};
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar hyperapp_1 = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\nvar router_1 = __webpack_require__(/*! @hyperapp/router */ \"./node_modules/@hyperapp/router/src/index.js\");\n__webpack_require__(/*! @hyperapp/html */ \"./node_modules/@hyperapp/html/dist/html.js\");\nvar Storage_1 = __webpack_require__(/*! ../Utils/Storage */ \"./src/scripts/Utils/Storage.ts\");\nvar cache = {\n    rss: new Storage_1.Storage(\"rss\"),\n};\nexports.configActions = {\n    addRSSEndpoint: function () { return function (state, actions) {\n        if (!cache.rss.get()) {\n            cache.rss.set([]);\n        }\n        cache.rss.set(cache.rss.get().concat([{ url: state.additionalRss }]));\n        return {\n            rsss: cache.rss.get(),\n        };\n    }; },\n    removeRSSEndpoint: function (url) { return function (state, actions) {\n        cache.rss.set(cache.rss.get().filter(function (rss) { return rss.url !== url; }));\n        return {\n            rsss: cache.rss.get(),\n        };\n    }; },\n    updateRSSEndpointUrl: function (_a) {\n        var value = _a.target.value;\n        return function (state) {\n            return {\n                additionalRss: value,\n            };\n        };\n    },\n    loadRSSEndpoint: function () { return function () {\n        return {\n            rsss: cache.rss.get() || [],\n        };\n    }; }\n};\nvar Subscribing = function (_a) {\n    var index = _a.index, url = _a.url, removeAction = _a.removeAction;\n    return (hyperapp_1.h(\"span\", null,\n        hyperapp_1.h(\"span\", null, url),\n        hyperapp_1.h(\"button\", { class: \"waves-effect waves-light btn right\", onclick: function () { return removeAction(url); } }, \"x\")));\n};\nexports.Config = function (_a) {\n    var configActions = _a.configActions, rsss = _a.rsss;\n    return (hyperapp_1.h(\"div\", null,\n        hyperapp_1.h(router_1.Link, { to: \"/\" }, \"home\"),\n        hyperapp_1.h(\"div\", null, \"subscribing\"),\n        hyperapp_1.h(\"ul\", { class: \"collection\" }, rsss.map(function (rss, index) {\n            return hyperapp_1.h(\"li\", { class: \"collection-item\" },\n                hyperapp_1.h(Subscribing, { url: rss.url, index: index, removeAction: configActions.removeRSSEndpoint }));\n        })),\n        hyperapp_1.h(\"div\", null, \"input url\"),\n        hyperapp_1.h(\"input\", { oninput: configActions.updateRSSEndpointUrl }),\n        hyperapp_1.h(\"button\", { class: \"waves-effect waves-light btn\", onclick: configActions.addRSSEndpoint }, \"add\")));\n};\n\n\n//# sourceURL=webpack:///./src/scripts/Components/Config.tsx?");
 
 /***/ }),
-/* 13 */
+
+/***/ "./src/scripts/Components/RSSList.tsx":
+/*!********************************************!*\
+  !*** ./src/scripts/Components/RSSList.tsx ***!
+  \********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Storage = /** @class */ (function () {
-    function Storage(key) {
-        this.key = key;
-    }
-    Storage.prototype.get = function () {
-        if (this.cache) {
-            return this.cache;
-        }
-        return this.cache = JSON.parse(localStorage.getItem(this.key));
-    };
-    Storage.prototype.set = function (parameter) {
-        this.cache = parameter;
-        localStorage.setItem(this.key, JSON.stringify(parameter));
-    };
-    return Storage;
-}());
-exports.Storage = Storage;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar hyperapp_1 = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\nvar router_1 = __webpack_require__(/*! @hyperapp/router */ \"./node_modules/@hyperapp/router/src/index.js\");\n__webpack_require__(/*! @hyperapp/html */ \"./node_modules/@hyperapp/html/dist/html.js\");\nexports.RSSList = function (_a) {\n    var pages = _a.pages, fetch = _a.fetch;\n    return (hyperapp_1.h(\"div\", null,\n        hyperapp_1.h(router_1.Link, { to: \"/config\" }, \"config\"),\n        hyperapp_1.h(\"br\", null),\n        hyperapp_1.h(\"button\", { class: \"waves-effect waves-light btn\", onclick: fetch }, \"update\"),\n        hyperapp_1.h(\"ul\", { class: \"collection\" }, pages.map(function (page, index) {\n            return (hyperapp_1.h(\"li\", { class: \"collection-item\" },\n                hyperapp_1.h(router_1.Link, { to: \"/\" + index }, page.title)));\n        }))));\n};\n\n\n//# sourceURL=webpack:///./src/scripts/Components/RSSList.tsx?");
 
 /***/ }),
-/* 14 */
+
+/***/ "./src/scripts/Components/RSSView.tsx":
+/*!********************************************!*\
+  !*** ./src/scripts/Components/RSSView.tsx ***!
+  \********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-function fetchRSS(url) {
-    return __awaiter(this, void 0, void 0, function () {
-        var q;
-        return __generator(this, function (_a) {
-            q = "select * from rss(5) where url='" + encodeURIComponent(url) + "'";
-            return [2 /*return*/, fetch("https://query.yahooapis.com/v1/public/yql?q=" + q + "&format=json", { cache: "no-cache" })];
-        });
-    });
-}
-function fetchAll(rsss) {
-    return __awaiter(this, void 0, void 0, function () {
-        var pages, _i, rsss_1, rss, result, json;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    pages = [];
-                    _i = 0, rsss_1 = rsss;
-                    _a.label = 1;
-                case 1:
-                    if (!(_i < rsss_1.length)) return [3 /*break*/, 5];
-                    rss = rsss_1[_i];
-                    return [4 /*yield*/, fetchRSS(rss.url)];
-                case 2:
-                    result = _a.sent();
-                    if (!result.ok) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
-                case 3:
-                    json = _a.sent();
-                    if (Array.isArray(json.query.results.item)) {
-                        pages.push.apply(pages, json.query.results.item);
-                    }
-                    _a.label = 4;
-                case 4:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 5: return [2 /*return*/, pages];
-            }
-        });
-    });
-}
-exports.fetchAll = fetchAll;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar hyperapp_1 = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\nvar router_1 = __webpack_require__(/*! @hyperapp/router */ \"./node_modules/@hyperapp/router/src/index.js\");\n__webpack_require__(/*! @hyperapp/html */ \"./node_modules/@hyperapp/html/dist/html.js\");\nvar Route_1 = __webpack_require__(/*! ../Utils/Patches/Route */ \"./src/scripts/Utils/Patches/Route.tsx\");\nvar Utils_1 = __webpack_require__(/*! ../Utils/Utils */ \"./src/scripts/Utils/Utils.ts\");\nvar Description = function (_a) {\n    var description = _a.description;\n    var body = typeof description === \"string\" ?\n        description :\n        description.content;\n    return (hyperapp_1.h(\"div\", null,\n        hyperapp_1.h(router_1.Link, { to: \"/\" }, \"back\"),\n        hyperapp_1.h(\"div\", { oncreate: Utils_1.htmlfy }, body)));\n};\nexports.RSSView = function (_a) {\n    var pages = _a.pages;\n    return (hyperapp_1.h(\"div\", null, pages.map(function (page, index) { return (createRoute(index, page.description)); })));\n};\nfunction createRoute(index, description) {\n    return (hyperapp_1.h(Route_1.Route, { path: \"/\" + index },\n        hyperapp_1.h(Description, { description: description })));\n}\n\n\n//# sourceURL=webpack:///./src/scripts/Components/RSSView.tsx?");
 
 /***/ }),
-/* 15 */
+
+/***/ "./src/scripts/Services.ts":
+/*!*********************************!*\
+  !*** ./src/scripts/Services.ts ***!
+  \*********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var hyperapp_1 = __webpack_require__(0);
-var router_1 = __webpack_require__(1);
-__webpack_require__(2);
-exports.RSSList = function (_a) {
-    var pages = _a.pages, fetch = _a.fetch;
-    return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/config" }, "config"),
-        hyperapp_1.h("br", null),
-        hyperapp_1.h("button", { class: "waves-effect waves-light btn", onclick: fetch }, "update"),
-        hyperapp_1.h("ul", { class: "collection" }, pages.map(function (page, index) {
-            return (hyperapp_1.h("li", { class: "collection-item" },
-                hyperapp_1.h(router_1.Link, { to: "/" + index }, page.title)));
-        }))));
-};
-
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nObject.defineProperty(exports, \"__esModule\", { value: true });\nfunction fetchRSS(url) {\n    return __awaiter(this, void 0, void 0, function () {\n        var q;\n        return __generator(this, function (_a) {\n            q = \"select * from rss(5) where url='\" + encodeURIComponent(url) + \"'\";\n            return [2 /*return*/, fetch(\"https://query.yahooapis.com/v1/public/yql?q=\" + q + \"&format=json\", { cache: \"no-cache\" })];\n        });\n    });\n}\nfunction fetchAll(rsss) {\n    return __awaiter(this, void 0, void 0, function () {\n        var pages, _i, rsss_1, rss, result, json;\n        return __generator(this, function (_a) {\n            switch (_a.label) {\n                case 0:\n                    pages = [];\n                    _i = 0, rsss_1 = rsss;\n                    _a.label = 1;\n                case 1:\n                    if (!(_i < rsss_1.length)) return [3 /*break*/, 5];\n                    rss = rsss_1[_i];\n                    return [4 /*yield*/, fetchRSS(rss.url)];\n                case 2:\n                    result = _a.sent();\n                    if (!result.ok) return [3 /*break*/, 4];\n                    return [4 /*yield*/, result.json()];\n                case 3:\n                    json = _a.sent();\n                    if (Array.isArray(json.query.results.item)) {\n                        pages.push.apply(pages, json.query.results.item);\n                    }\n                    _a.label = 4;\n                case 4:\n                    _i++;\n                    return [3 /*break*/, 1];\n                case 5: return [2 /*return*/, pages];\n            }\n        });\n    });\n}\nexports.fetchAll = fetchAll;\n\n\n//# sourceURL=webpack:///./src/scripts/Services.ts?");
 
 /***/ }),
-/* 16 */
+
+/***/ "./src/scripts/Utils/Patches/Route.tsx":
+/*!*********************************************!*\
+  !*** ./src/scripts/Utils/Patches/Route.tsx ***!
+  \*********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var hyperapp_1 = __webpack_require__(0);
-var router_1 = __webpack_require__(1);
-__webpack_require__(2);
-var Route_1 = __webpack_require__(3);
-var Utils_1 = __webpack_require__(17);
-var Description = function (_a) {
-    var description = _a.description;
-    var body = typeof description === "string" ?
-        description :
-        description.content;
-    return (hyperapp_1.h("div", null,
-        hyperapp_1.h(router_1.Link, { to: "/" }, "back"),
-        hyperapp_1.h("div", { oncreate: Utils_1.htmlfy }, body)));
-};
-exports.RSSView = function (_a) {
-    var pages = _a.pages;
-    return (hyperapp_1.h("div", null, pages.map(function (page, index) { return (createRoute(index, page.description)); })));
-};
-function createRoute(index, description) {
-    return (hyperapp_1.h(Route_1.Route, { path: "/" + index },
-        hyperapp_1.h(Description, { description: description })));
-}
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar hyperapp_1 = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\nvar router_1 = __webpack_require__(/*! @hyperapp/router */ \"./node_modules/@hyperapp/router/src/index.js\");\nexports.Route = function (_a, children) {\n    var parent = _a.parent, path = _a.path;\n    return hyperapp_1.h(router_1.Route, { parent: parent, path: path, render: function () { return children; } });\n};\n\n\n//# sourceURL=webpack:///./src/scripts/Utils/Patches/Route.tsx?");
 
 /***/ }),
-/* 17 */
+
+/***/ "./src/scripts/Utils/Storage.ts":
+/*!**************************************!*\
+  !*** ./src/scripts/Utils/Storage.ts ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar Storage = /** @class */ (function () {\n    function Storage(key) {\n        this.key = key;\n    }\n    Storage.prototype.get = function () {\n        if (this.cache) {\n            return this.cache;\n        }\n        return this.cache = JSON.parse(localStorage.getItem(this.key));\n    };\n    Storage.prototype.set = function (parameter) {\n        this.cache = parameter;\n        localStorage.setItem(this.key, JSON.stringify(parameter));\n    };\n    return Storage;\n}());\nexports.Storage = Storage;\n\n\n//# sourceURL=webpack:///./src/scripts/Utils/Storage.ts?");
 
-Object.defineProperty(exports, "__esModule", { value: true });
-function htmlfy($) {
-    $.innerHTML = $.textContent;
-}
-exports.htmlfy = htmlfy;
+/***/ }),
 
+/***/ "./src/scripts/Utils/Utils.ts":
+/*!************************************!*\
+  !*** ./src/scripts/Utils/Utils.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nfunction htmlfy($) {\n    $.innerHTML = $.textContent;\n}\nexports.htmlfy = htmlfy;\n\n\n//# sourceURL=webpack:///./src/scripts/Utils/Utils.ts?");
+
+/***/ }),
+
+/***/ "./src/scripts/index.tsx":
+/*!*******************************!*\
+  !*** ./src/scripts/index.tsx ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nvar __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {\n    return new (P || (P = Promise))(function (resolve, reject) {\n        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }\n        function rejected(value) { try { step(generator[\"throw\"](value)); } catch (e) { reject(e); } }\n        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }\n        step((generator = generator.apply(thisArg, _arguments || [])).next());\n    });\n};\nvar __generator = (this && this.__generator) || function (thisArg, body) {\n    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;\n    return g = { next: verb(0), \"throw\": verb(1), \"return\": verb(2) }, typeof Symbol === \"function\" && (g[Symbol.iterator] = function() { return this; }), g;\n    function verb(n) { return function (v) { return step([n, v]); }; }\n    function step(op) {\n        if (f) throw new TypeError(\"Generator is already executing.\");\n        while (_) try {\n            if (f = 1, y && (t = op[0] & 2 ? y[\"return\"] : op[0] ? y[\"throw\"] || ((t = y[\"return\"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;\n            if (y = 0, t) op = [op[0] & 2, t.value];\n            switch (op[0]) {\n                case 0: case 1: t = op; break;\n                case 4: _.label++; return { value: op[1], done: false };\n                case 5: _.label++; y = op[1]; op = [0]; continue;\n                case 7: op = _.ops.pop(); _.trys.pop(); continue;\n                default:\n                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }\n                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }\n                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }\n                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }\n                    if (t[2]) _.ops.pop();\n                    _.trys.pop(); continue;\n            }\n            op = body.call(thisArg, _);\n        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }\n        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };\n    }\n};\nvar _this = this;\nObject.defineProperty(exports, \"__esModule\", { value: true });\nvar hyperapp_1 = __webpack_require__(/*! hyperapp */ \"./node_modules/hyperapp/src/index.js\");\nvar router_1 = __webpack_require__(/*! @hyperapp/router */ \"./node_modules/@hyperapp/router/src/index.js\");\n__webpack_require__(/*! @hyperapp/html */ \"./node_modules/@hyperapp/html/dist/html.js\");\n__webpack_require__(/*! materialize */ \"./node_modules/materialize/index.js\");\nvar Config_1 = __webpack_require__(/*! ./Components/Config */ \"./src/scripts/Components/Config.tsx\");\nvar Services_1 = __webpack_require__(/*! ./Services */ \"./src/scripts/Services.ts\");\nvar Route_1 = __webpack_require__(/*! ./Utils/Patches/Route */ \"./src/scripts/Utils/Patches/Route.tsx\");\nvar RSSList_1 = __webpack_require__(/*! ./Components/RSSList */ \"./src/scripts/Components/RSSList.tsx\");\nvar RSSView_1 = __webpack_require__(/*! ./Components/RSSView */ \"./src/scripts/Components/RSSView.tsx\");\nvar actions = {\n    fetch: function () { return function (state, actions) { return __awaiter(_this, void 0, void 0, function () {\n        var pages;\n        return __generator(this, function (_a) {\n            switch (_a.label) {\n                case 0: return [4 /*yield*/, Services_1.fetchAll(state.config.rsss)];\n                case 1:\n                    pages = _a.sent();\n                    actions.update(pages);\n                    return [2 /*return*/];\n            }\n        });\n    }); }; },\n    update: function (pages) { return function (state) {\n        return {\n            pages: pages,\n        };\n    }; },\n    config: Config_1.configActions,\n    location: router_1.location.actions,\n};\nvar state = {\n    location: router_1.location.state,\n    config: {\n        additionalRss: \"\",\n        rsss: [],\n    },\n    pages: [],\n};\nfunction view(state, actions) {\n    return (hyperapp_1.h(\"div\", { class: \"container\" },\n        hyperapp_1.h(Route_1.Route, { path: \"/config\" },\n            hyperapp_1.h(Config_1.Config, { rsss: state.config.rsss, configActions: actions.config })),\n        hyperapp_1.h(Route_1.Route, { path: \"/\" },\n            hyperapp_1.h(RSSList_1.RSSList, { pages: state.pages, fetch: actions.fetch })),\n        hyperapp_1.h(RSSView_1.RSSView, { pages: state.pages })));\n}\nvar main = hyperapp_1.app(state, actions, view, document.body);\nrouter_1.location.subscribe(main.location);\nconsole.log(main);\nmain.config.loadRSSEndpoint();\nmain.fetch();\nmain.location.go(\"/\");\n\n\n//# sourceURL=webpack:///./src/scripts/index.tsx?");
 
 /***/ })
-/******/ ]);
+
+/******/ });
